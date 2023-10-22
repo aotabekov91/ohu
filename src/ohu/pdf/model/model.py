@@ -152,28 +152,66 @@ class Model(QtCore.QObject):
         if not childNode.isNull():
             self.outline(document, childNode, item)
 
-    def __eq__(self, other): return self.m_data==other.m_data
+    def __eq__(self, other): 
+        return self.m_data==other.m_data
 
-    def __hash__(self): return hash(self.m_data)
+    def __hash__(self): 
+        return hash(self.m_data)
 
-    def id(self): return self.m_id
+    def id(self): 
+        return self.m_id
 
-    def setId(self, m_id): self.m_id=m_id
+    def setId(self, m_id): 
+        self.m_id=m_id
 
-    def filePath(self): return self.m_filePath
+    def filePath(self): 
+        return self.m_filePath
 
-    def readSuccess(self): return self.m_data is not None
+    def readSuccess(self): 
+        return self.m_data is not None
 
-    def numberOfPages(self): return self.m_data.numPages()
+    def numberOfPages(self): 
+        return self.m_data.numPages()
 
-    def setHash(self, dhash): self.m_hash=dhash
+    def setHash(self, dhash): 
+        self.m_hash=dhash
 
-    def hash(self): return self.m_hash
+    def hash(self): 
+        return self.m_hash
 
-    def author(self): return self.m_data.author()
+    def author(self): 
+        return self.m_data.author()
 
-    def title(self): return self.m_data.title()
+    def title(self): 
+        return self.m_data.title()
 
-    def page(self, pageNumber): return self.m_pages.get(pageNumber, None)
+    def page(self, pageNumber): 
+        return self.m_pages.get(pageNumber, None)
 
-    def pages(self): return self.m_pages
+    def pages(self): 
+        return self.m_pages
+
+    @staticmethod
+    def getPosition(boundaries):
+        text=[]
+        for b in boundaries: 
+            x=str(b.x())[:6]
+            y=str(b.y())[:6]
+            w=str(b.width())[:6]
+            h=str(b.height())[:6]
+            text+=[f'{x}:{y}:{w}:{h}']
+        return '_'.join(text)
+
+    @staticmethod
+    def getBoundaries(position):
+
+        areas=[]
+        for t in position.split('_'):
+            x, y, w, h = tuple(t.split(':'))
+            areas+=[QtCore.QRectF(
+                float(x), 
+                float(y), 
+                float(w), 
+                float(h)
+                )]
+        return areas

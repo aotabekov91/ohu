@@ -1,5 +1,3 @@
-import math
-
 from PyQt5 import QtCore
 from gizmo.ui import View as BaseView
 
@@ -9,8 +7,10 @@ from .layout import Layout
 
 class View(BaseView):
 
-    annotationAdded=QtCore.pyqtSignal(object)
-    annotationRemoved=QtCore.pyqtSignal(object)
+    annotationAdded=QtCore.pyqtSignal(
+            object)
+    annotationRemoved=QtCore.pyqtSignal(
+            object)
     scaleModeChanged = QtCore.pyqtSignal(
             object, object)
     scaleFactorChanged = QtCore.pyqtSignal(
@@ -51,9 +51,12 @@ class View(BaseView):
 
     def on_annotationChanged(self, page):
 
-        if self.id()==page.pageItem().view().id(): return
-        if page.model().hash()!=self.page().model().hash(): return
-        if page.pageNumber()!=self.page().pageNumber(): return
+        if self.id()==page.pageItem().view().id(): 
+            return
+        if page.model().hash()!=self.page().model().hash(): 
+            return
+        if page.pageNumber()!=self.page().pageNumber(): 
+            return
         page.pageItem().refresh(dropCachedPixmap=True)
 
     # def readjust(self):
