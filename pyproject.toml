@@ -1,0 +1,19 @@
+[tool.poetry]
+name = "ohu"
+version = "0.0.1"
+description = "A render"
+authors = ["A O <adhambek.otabekov.post@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.9"
+plug = {path = "/home/adam/code/plug", extras=["qt"], develop = true}
+# plug = {git = "https://github.com/aotabekov91/plug", extras=["qt"], branch='main'}
+python-poppler-qt5 = {version = ">=21.3.0", optional=true}
+
+[tool.poetry.extras]
+pdf=[python-poppler-qt5]
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
