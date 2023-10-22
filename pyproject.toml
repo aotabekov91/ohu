@@ -1,19 +1,19 @@
-[tool.poetry]
+[build-system]
+requires = ["setuptools", "setuptools-scm"]
+build-backend = "setuptools.build_meta"
+
+[project]
 name = "ohu"
 version = "0.0.1"
+authors = [
+    {name = "A O", email = "adhambek.otabekov.post@gmail.com"},
+]
 description = "A render"
-authors = ["A O <adhambek.otabekov.post@gmail.com>"]
 readme = "README.md"
+requires-python = ">=3.7"
+dependencies = [
+	"plug[qt] @ git+ssh://git@github.com/aotabekov/plug"
+]
 
-[tool.poetry.dependencies]
-python = "^3.9"
-plug = {path = "/home/adam/code/plug", extras=["qt"], develop = true}
-# plug = {git = "https://github.com/aotabekov91/plug", extras=["qt"], branch='main'}
-python-poppler-qt5 = {version = ">=21.3.0", optional=true}
-
-[tool.poetry.extras]
-pdf=[python-poppler-qt5]
-
-[build-system]
-requires = ["poetry-core"]
-build-backend = "poetry.core.masonry.api"
+[project.optional-dependencies]
+pdf = ["python-poppler-qt5"]
