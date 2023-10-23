@@ -59,9 +59,10 @@ class View(BaseView):
             return
         page.pageItem().refresh(dropCachedPixmap=True)
 
-    # def readjust(self):
-    #     left, top=self.saveLeftAndTop()
-    #     self.updateSceneAndView(left, top)
+    def readjust(self):
+
+        left, top=self.saveLeftAndTop()
+        self.updateSceneAndView(left, top)
 
     # def resizeEvent(self, event):
     #     super().resizeEvent(event)
