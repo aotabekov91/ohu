@@ -3,14 +3,13 @@ from PyQt5 import QtCore, QtGui
 
 from .page import Page
 
-class Model(QtCore.QObject):
+class Model:
 
     def __init__(self, filePath):
 
         super().__init__()
         self.m_data=None
         self.m_hash=None
-        self.m_mutex=QtCore.QMutex()
         self.m_filePath=filePath
         self.readFilepath(filePath)
 
@@ -90,65 +89,48 @@ class Model(QtCore.QObject):
 
     def outline(self, document, node, parent):
 
+        linkDestination=0
         element=node.toElement()
         item=QtGui.QStandardItem(element.tagName())
-        item.setFlags(QtCore.Qt.ItemIsEnabled or QtCore.Qt.ItemIsSelectable)
-
-        linkDestination=0
-
+        item.setFlags(
+                QtCore.Qt.ItemIsEnabled or QtCore.Qt.ItemIsSelectable)
         if element.hasAttribute('Destination'):
             linkDestination=Poppler.LinkDestination(
                     element.attribute('Destination'))
         elif element.hasAttribute('DestinationName'):
             linkDestination=self.m_data.linkDestination(
                     element.attribute('DestinationName'))
-
         if linkDestination!=0:
-
-            page=linkDestination.pageNumber()
-            left=0.
             top=0.
-
-            if page<1: page=1
-
-            if page>document.numPages(): page=document.numPages()
-
+            left=0.
+            page=linkDestination.pageNumber()
+            if page<1: 
+                page=1
+            if page>document.numPages(): 
+                page=document.numPages()
             if linkDestination.isChangeLeft():
-
                 left=linkDestination.left()
-
                 if left<0.: left=0.
                 if left>1.: left=1.
-
             if linkDestination.isChangeTop():
-
                 top=linkDestination.top()
-
                 if top<0.: top=0.
                 if top>1.: top=1.
-
             del linkDestination
-
             item.setData(page, QtCore.Qt.UserRole+1)
             item.setData(left, QtCore.Qt.UserRole+2)
             item.setData(top, QtCore.Qt.UserRole+3)
             item.setData(element.tagName(), QtCore.Qt.UserRole+5)
-
             pageItem=item.clone()
             pageItem.setText(str(page))
             pageItem.setTextAlignment(QtCore.Qt.AlignRight)
-
             # if allow also pages the look of outline becomes ugly
             # parent.appendRow([item, pageItem])
             parent.appendRow(item)
-
         siblingNode=node.nextSibling()
-
         if not siblingNode.isNull():
             self.outline(document, siblingNode, parent)
-
         childNode=node.firstChild()
-
         if not childNode.isNull():
             self.outline(document, childNode, item)
 

@@ -3,10 +3,7 @@ from PyQt5 import QtCore, QtGui
 from popplerqt5 import Poppler
 from .annotation import Annotation
 
-class Page(QtCore.QObject):
-
-    annotationAdded=QtCore.pyqtSignal(object)
-    annotationRemoved=QtCore.pyqtSignal(object)
+class Page:
 
     def __init__(
             self, 
@@ -141,7 +138,6 @@ class Page(QtCore.QObject):
                 self.m_annotations.pop(adx)
                 self.m_data.removeAnnotation(
                         d['pAnn'].data())
-                self.annotationRemoved.emit(self)
 
     def nativeAnnotations(self): 
         return self.m_native_annotations

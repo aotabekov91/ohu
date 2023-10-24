@@ -237,11 +237,11 @@ class Item(QGraphicsObject):
 
         return (self.yresol()/72.0)*self.m_size.height()
 
-    def refresh(self, dropCachedPixmap=False):
+    def refresh(self, dropCache=False):
 
         for tile in self.m_tileItems:
-            tile.refresh(dropCachedPixmap)
-            if dropCachedPixmap: tile.dropCachedPixmaps(self)
+            tile.refresh(dropCache)
+            if dropCache: tile.dropCaches(self)
         self.update()
 
     def startRender(self, prefetch):

@@ -14,12 +14,13 @@ class SinglePage:
         pageSpacing=self.s_settings.get('pageSpacing', 0.0)
         return viewportWidth-self.viewportPadding#-2.*pageSpacing
 
-    def prepareLayout(self, 
-                      pageItems, 
-                      rightToLeftMode, 
-                      left, 
-                      right, 
-                      height):
+    def prepareLayout(
+            self, 
+            pageItems, 
+            rightToLeftMode, 
+            left, 
+            right, 
+            height):
 
         pageSpacing=self.s_settings.get('pageSpacing', 0.0)
         pageHeight=0.
@@ -34,15 +35,20 @@ class SinglePage:
             height+=pageSpacing+pageHeight
         return left, right, height
 
-    def leftIndex(self, index): return index
+    def leftIndex(self, index): 
+        return index
 
-    def rightIndex(self, index, count): return index
+    def rightIndex(self, index, count): 
+        return index
 
-    def nextPage(self, page, count): return min(page+1, count)
+    def nextPage(self, page, count): 
+        return min(page+1, count)
 
-    def previousPage(self, page, count): return max(page-1, 1)
+    def previousPage(self, page, count): 
+        return max(page-1, 1)
 
-    def currentPage(self, page): return page
+    def currentPage(self, page): 
+        return page
 
 
 class Layout:
@@ -54,7 +60,8 @@ class Layout:
                 self.s_settings.get(
                     'layoutMode', 'SinglePage'))
 
-    def layoutMode(self): return self.m_layoutMode
+    def layoutMode(self): 
+        return self.m_layoutMode
 
     def leftIndex(self, index): 
         return self.m_layoutMode.leftIndex(index)
@@ -76,12 +83,13 @@ class Layout:
         pageSpacing=self.s_settings.get('pageSpacing', 0.0)
         return viewportHeight-2.0*pageSpacing
 
-    def prepareLayout(self, 
-                      pageItems, 
-                      rightToLeftMode=False, 
-                      left=0., 
-                      right=0, 
-                      height=0.):
+    def prepareLayout(
+            self, 
+            pageItems, 
+            rightToLeftMode=False, 
+            left=0., 
+            right=0, 
+            height=0.):
 
         return self.m_layoutMode.prepareLayout(
                 pageItems, rightToLeftMode, left, right, height)

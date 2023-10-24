@@ -75,8 +75,8 @@ class Tile(QObject):
         else:
             self.startRender()
 
-    def refresh(self, dropCachedPixmap=False):
-        if not dropCachedPixmap:
+    def refresh(self, dropCache=False):
+        if not dropCache:
             object_ = self.s_cache.get(self.cacheKey())
             if object_ is not None:
                 self.m_obsoletePixmap = object_
@@ -134,7 +134,7 @@ class Tile(QObject):
     def dropObsoletePixmap(self):
         self.m_obsoletePixmap = None 
 
-    def dropCachedPixmaps(self, page):
+    def dropCaches(self, page):
 
         for key, pixmap in list(self.s_cache.items()):
             if key[0]==page: self.s_cache.pop(key)
