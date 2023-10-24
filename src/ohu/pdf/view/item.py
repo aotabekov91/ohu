@@ -9,46 +9,61 @@ from .tile import Tile
 class Item(QGraphicsObject):
 
     cropRectChanged = pyqtSignal()
-    linkClicked = pyqtSignal(bool, int, float, float)
+    linkClicked = pyqtSignal(
+            bool, int, float, float)
     wasModified = pyqtSignal()
-    mouseDoubleClick=pyqtSignal(int, 'QPointF')
+    mouseDoubleClick=pyqtSignal(
+            int, 'QPointF')
+    mouseReleaseOccured=pyqtSignal(
+            object, object)
+    mouseMoveOccured=pyqtSignal(
+            object, object)
+    mousePressOccured=pyqtSignal(
+            object, object)
+    mouseDoubleClickOccured=pyqtSignal(
+            object, object)
+    hoverMoveOccured=pyqtSignal(
+            object, object)
+    itemPainted=pyqtSignal(
+            object, object, object, object)
 
-    mouseReleaseOccured=pyqtSignal(object, object)
-    mouseMoveOccured=pyqtSignal(object, object)
-    mousePressOccured=pyqtSignal(object, object)
-    mouseDoubleClickOccured=pyqtSignal(object, object)
-    hoverMoveOccured=pyqtSignal(object, object)
+    def __init__(
+            self, 
+            page, 
+            view,
+            **kwargs,
+            ):
 
-    itemPainted=pyqtSignal(object, object, object, object)
-
-    def __init__(self, page, view):
-
-        super().__init__(objectName='pageItem')
-
+        super().__init__(
+                objectName='pageItem',
+                **kwargs
+                )
         self.m_view=view
         self.m_searched=[]
-
         self.m_page = page
         self.m_menu=QMenu(view)
         self.m_size = page.size()
         self.s_cache=view.s_cache
         self.m_boundingRect = QRectF() 
-
         self.m_transform = QTransform()
         self.m_normalizedTransform = QTransform()
-
         self.m_paint_links=False
         self.setAcceptHoverEvents(True)
-
-        settings=self.view().settings()
-        self.m_rotation=settings.get('rotation', 0)
-        self.m_xresol=settings.get('resolutionX', 72)
-        self.m_yresol=settings.get('resolutionY', 72)
-        self.m_use_tiling=settings.get('useTiling', False)
-        self.m_scaleFactor=settings.get('scaleFactor', 1.)
-        self.m_proxy_padding=settings.get('proxyPadding', 0.)
-        self.m_device_pixel_ration=settings.get('devicePixelRatio', 1.)
-
+        s=self.view().settings()
+        self.m_rotation=s.get(
+                'rotation', 0)
+        self.m_xresol=s.get(
+                'resolutionX', 72)
+        self.m_yresol=s.get(
+                'resolutionY', 72)
+        self.m_use_tiling=s.get(
+                'useTiling', False)
+        self.m_scaleFactor=s.get(
+                'scaleFactor', 1.)
+        self.m_proxy_padding=s.get(
+                'proxyPadding', 0.)
+        self.m_device_pixel_ration=s.get(
+                'devicePixelRatio', 1.)
         self.setup()
 
     def setup(self):
@@ -58,7 +73,8 @@ class Item(QGraphicsObject):
             self.m_tileItems=[tile]
         self.redraw()
 
-    def setBlock(self, blocks=[]): raise
+    def setBlock(self, blocks=[]): 
+        raise
 
     def select(self, selections=[]):
 
