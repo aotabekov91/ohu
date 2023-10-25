@@ -1,23 +1,23 @@
-from PyQt5.QtGui import *
-from PyQt5.QtCore import *
-from PyQt5.QtWidgets import *
+from PyQt5 import QtCore, QtGui
 
 from .task import Task
 
-class Tile(QObject):
+class Tile(QtCore.QObject):
 
     def __init__(self, parent):
+
         super().__init__(parent)
         self.m_parent=parent
-        self.m_rect = QRect()
-        self.m_cropRect = QRectF() 
         self.m_pixmapError = False
-        self.m_pixmap = QPixmap()
-        self.m_obsoletePixmap = QPixmap()
         self.s_cache=parent.s_cache
+        self.m_rect = QtCore.QRect()
+        self.m_pixmap = QtGui.QPixmap()
+        self.m_cropRect = QtCore.QRectF() 
+        self.m_obsoletePixmap = QtGui.QPixmap()
         self.setup()
 
-    def pageItem(self): return self.m_parent
+    def pageItem(self): 
+        return self.m_parent
 
     def setup(self):
 
@@ -29,53 +29,53 @@ class Tile(QObject):
         self.m_renderTask.cancel(True)
         self.m_renderTask.wait()
 
-    def on_renderTask_imageReady(self, rect, prefetch, image):
+    def on_renderTask_imageReady(
+            self, rect, prefetch, image):
 
         if image is None:
             self.m_pixmapError=True
             return
         if self.m_rect==rect:
-
-            self.m_obsoletePixmap=QPixmap()
+            self.m_obsoletePixmap=QtGui.QPixmap()
             if prefetch and not self.m_renderTask.wasCanceledForcibly():
-                self.s_cache[self.cacheKey()]=QPixmap.fromImage(image)
+                self.s_cache[self.cacheKey()]=QtGui.QPixmap.fromImage(image)
             elif not self.m_renderTask.wasCanceled():
                 # image=self.revert(image)
-                self.m_pixmap=QPixmap.fromImage(image)
+                self.m_pixmap=QtGui.QPixmap.fromImage(image)
 
     def revert(self, image):
 
         # todo: very slow
         for y in range(image.height()):
             for x in range(image.width()):
-
                 pc=image.pixel(x, y)
-                red=abs(255-qRed(pc))
-                green=abs(255-qGreen(pc))
-                blue=abs(255-qBlue(pc))
+                red=abs(255-QtGui.qRed(pc))
+                green=abs(255-QtGui.qGreen(pc))
+                blue=abs(255-QtGui.qBlue(pc))
                 c=[red, green, blue]
                 if c!=[0, 0, 0]: c=[124, green, 0]
-                nc=QColor(*c).rgb()
+                nc=QtGui.QColor(*c).rgb()
                 image.setPixel(x, y, nc)
         return image
 
     def takePixmap(self):
+
         key = self.cacheKey()
         pixmap = self.s_cache.get(key)
 
         if self.isNotEmptyPixmap(pixmap):
-            self.m_obsoletePixmap = QPixmap() 
+            self.m_obsoletePixmap = QtGui.QPixmap() 
             return pixmap
-
         elif self.isNotEmptyPixmap(self.m_pixmap):
             self.s_cache[key]=self.m_pixmap
             pixmap = self.m_pixmap
-            self.m_pixmap = QPixmap() 
+            self.m_pixmap = QtGui.QPixmap() 
             return pixmap
         else:
             self.startRender()
 
     def refresh(self, dropCache=False):
+
         if not dropCache:
             object_ = self.s_cache.get(self.cacheKey())
             if object_ is not None:
@@ -84,25 +84,27 @@ class Tile(QObject):
             key=self.cacheKey()
             if key in self.s_cache:
                 self.s_cache.pop(key)
-            self.m_obsoletePixmap = QPixmap() 
-
+            self.m_obsoletePixmap = QtGui.QPixmap() 
         self.m_renderTask.cancel(True)
         self.m_pixmapError = False
-        self.m_pixmap =QPixmap()
+        self.m_pixmap =QtGui.QPixmap()
 
     def startRender(self, prefetch=False):
+
         cond = self.m_pixmapError or self.m_renderTask.isRunning()
         cond = cond or (prefetch and self.cacheKey() in self.s_cache)
-        if cond: return
-
-        self.m_renderTask.start(self.m_rect, prefetch)
+        if not cond: 
+            self.m_renderTask.start(
+                    self.m_rect, prefetch)
 
     def cancelRender(self):
+
         self.m_renderTask.cancel()
-        self.m_pixmap=QPixmap()
-        self.m_obsoletePixmap=QPixmap()
+        self.m_pixmap=QtGui.QPixmap()
+        self.m_obsoletePixmap=QtGui.QPixmap()
 
     def deleteAfterRender(self):
+
         self.cancelRender()
         if not self.m_renderTask.isRunning():
             del self
@@ -111,9 +113,9 @@ class Tile(QObject):
         self.pageItem().update()
 
     def cacheKey(self):
+
         page = self.pageItem()
         size=self.m_rect
-
         data = (
             self.pageItem().xresol(),
             self.pageItem().yresol(),
@@ -148,9 +150,9 @@ class Tile(QObject):
                     pixmap)
         elif self.isNotEmptyPixmap(self.m_obsoletePixmap):
             painter.drawPixmap(
-                    QRectF(self.m_rect).translated(topLeft), 
+                    QtCore.QRectF(self.m_rect).translated(topLeft), 
                     self.m_obsoletePixmap, 
-                    QRectF())
+                    QtCore.QRectF())
         else:
             if not self.m_pixmapError:
                 return
@@ -158,8 +160,9 @@ class Tile(QObject):
                 raise
 
     def isNotEmptyPixmap(self, pixmap):
+
         if pixmap is not None:
-            if pixmap!=QPixmap(): 
+            if pixmap!=QtGui.QPixmap(): 
                 size=pixmap.size()
                 if size.width()*size.height()>0: 
                     return True

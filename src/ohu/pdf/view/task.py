@@ -1,35 +1,30 @@
-import math
+from PyQt5 import QtCore
 
-from PyQt5.QtGui import *
-from PyQt5.QtCore import *
-from PyQt5.QtWidgets import *
-
-NotCanceled=0
-CanceledNormally=1
-CanceledForcibly=2
-
-class Task(QObject, QRunnable):
-
-    finished = pyqtSignal()
-    imageReady = pyqtSignal('QRect', bool, 'QImage')
+class Task(QtCore.QObject, QtCore.QRunnable):
 
     NotCanceled=0
     CanceledNormally=1
     CanceledForcibly=2
+    finished = QtCore.pyqtSignal()
+    imageReady = QtCore.pyqtSignal(
+            'QRect', bool, 'QImage')
 
     def __init__(self, parent):
+
         super().__init__(parent)
         self.m_prefetch = False
         self.m_isRunning = False
         self.m_wasCanceled=self.NotCanceled
-        self.m_mutex=QMutex()
+        self.m_mutex=QtCore.QMutex()
         self.setup()
 
     def setup(self):
+
         self.setAutoDelete(False)
-        self.m_waitCondition=QWaitCondition()
+        self.m_waitCondition=QtCore.QWaitCondition()
 
     def start(self, rect, prefetch):
+
         self.m_rect = rect
         self.m_prefetch = prefetch
         self.m_mutex.lock()
@@ -44,17 +39,20 @@ class Task(QObject, QRunnable):
         pass
 
     def cancel(self, force=False):
+
         self.m_wasCanceled=self.CanceledNormally
         if force:
             self.m_wasCanceled=self.CanceledForcibly
 
     def wait(self):
-        mutexLocker=QMutexLocker(self.m_mutex)
+
+        mutexLocker=QtCore.QMutexLocker(self.m_mutex)
         while self.m_isRunning:
             self.m_waitCondition.wait(self.m_mutex)
 
     def isRunning(self):
-        mutexLocker = QMutexLocker(self.m_mutex)
+
+        mutexLocker = QtCore.QMutexLocker(self.m_mutex)
         return self.m_isRunning
 
     def wasCanceled(self):
@@ -85,6 +83,7 @@ class Task(QObject, QRunnable):
         self.finish()
 
     def finish(self):
+
         self.finished.emit()
         self.m_mutex.lock()
         self.m_isRunning = False

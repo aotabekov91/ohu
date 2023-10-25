@@ -17,39 +17,44 @@ class Cursor(QObject):
 
     def move(self, event, item):
 
+        s=self.start
         point=item.mapToPage(
                 event.pos(), unify=False)
         c=item.page().getRow(point)
-        if self.start and c:
+        if s and c:
             s=item.page().getRows(
-                    self.start['box'][0], 
-                    c['box'][0]
-                    )
+                    s['box'][0], c['box'][0])
             item.select([s])
 
-    def on_mousePress(self, view, item, event):
+    def on_mousePress(
+            self, view, item, event):
 
         page=item.page()
         item.prev_cursor=item.cursor()
         item.setCursor(Qt.IBeamCursor)
         point=item.mapToPage(
-                event.pos(), unify=False)
+                event.pos(), 
+                unify=False)
         self.start=page.getRow(
                 point)
 
-    def on_mouseMove(self, view, item, event): 
+    def on_mouseMove(
+            self, view, item, event): 
         self.move(event, item)
 
-    def on_mouseRelease(self, view, item, event): 
+    def on_mouseRelease(
+            self, view, item, event): 
         item.setCursor(item.prev_cursor)
 
-    def on_doubleClick(self, view, item, event):
+    def on_doubleClick(
+            self, view, item, event):
 
-        selection=[]
+        s=[]
         page=item.page()
         point=item.mapToPage(
-                event.pos(), unify=False)
+                event.pos(), 
+                unify=False
+                )
         data=page.getRow(point)
-        if data: 
-            selection+=[data] 
-        item.select(selection)
+        if data: s+=[data] 
+        item.select(s)
