@@ -1,8 +1,4 @@
-from PyQt5.QtGui import *
-from PyQt5.QtCore import *
-from PyQt5.QtWidgets import *
-
-from .single_page import SinglePage
+from .single import SinglePage
 
 class Layout:
 

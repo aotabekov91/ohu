@@ -16,7 +16,7 @@ class View(BaseView):
 
     def __init__(
             self, 
-            app, 
+            app=None, 
             layout=Layout,
             **kwargs,
             ):

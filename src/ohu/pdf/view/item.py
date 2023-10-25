@@ -1,30 +1,27 @@
 import math
-
-from PyQt5.QtGui import *
-from PyQt5.QtCore import *
-from PyQt5.QtWidgets import *
+from PyQt5 import QtCore, QtGui, QtWidgets
 
 from .tile import Tile
 
-class Item(QGraphicsObject):
+class Item(QtWidgets.QGraphicsObject):
 
-    cropRectChanged = pyqtSignal()
-    linkClicked = pyqtSignal(
+    cropRectChanged = QtCore.pyqtSignal()
+    linkClicked = QtCore.pyqtSignal(
             bool, int, float, float)
-    wasModified = pyqtSignal()
-    mouseDoubleClick=pyqtSignal(
-            int, 'QPointF')
-    mouseReleaseOccured=pyqtSignal(
+    wasModified = QtCore.pyqtSignal()
+    mouseDoubleClick=QtCore.pyqtSignal(
+            int, object)
+    mouseReleaseOccured=QtCore.pyqtSignal(
             object, object)
-    mouseMoveOccured=pyqtSignal(
+    mouseMoveOccured=QtCore.pyqtSignal(
             object, object)
-    mousePressOccured=pyqtSignal(
+    mousePressOccured=QtCore.pyqtSignal(
             object, object)
-    mouseDoubleClickOccured=pyqtSignal(
+    mouseDoubleClickOccured=QtCore.pyqtSignal(
             object, object)
-    hoverMoveOccured=pyqtSignal(
+    hoverMoveOccured=QtCore.pyqtSignal(
             object, object)
-    itemPainted=pyqtSignal(
+    itemPainted=QtCore.pyqtSignal(
             object, object, object, object)
 
     def __init__(
@@ -41,13 +38,13 @@ class Item(QGraphicsObject):
         self.m_view=view
         self.m_searched=[]
         self.m_page = page
-        self.m_menu=QMenu(view)
         self.m_size = page.size()
-        self.s_cache=view.s_cache
-        self.m_boundingRect = QRectF() 
-        self.m_transform = QTransform()
-        self.m_normalizedTransform = QTransform()
         self.m_paint_links=False
+        self.s_cache=view.s_cache
+        self.m_menu=QtWidgets.QMenu(view)
+        self.m_boundingRect = QtCore.QRectF() 
+        self.m_transform = QtGui.QTransform()
+        self.m_normalizedTransform = QtGui.QTransform()
         self.setAcceptHoverEvents(True)
         s=self.view().settings()
         self.m_rotation=s.get(
@@ -97,7 +94,7 @@ class Item(QGraphicsObject):
     def paint(self, painter, options, widgets):
 
         painter.setRenderHints(
-                QPainter.Antialiasing | QPainter.TextAntialiasing | QPainter.SmoothPixmapTransform)
+                QtGui.QPainter.Antialiasing | QtGui.QPainter.TextAntialiasing | QtGui.QPainter.SmoothPixmapTransform)
 
         self.paintPage(painter, options.exposedRect)
         self.paintSearch(painter, options, widgets)
@@ -114,9 +111,11 @@ class Item(QGraphicsObject):
                     box=s['box']
                     area_item=[self.mapToItem(b) for b in box]
                     painter.setBrush(
-                            QBrush(QColor(88, 139, 174, 30)))
-                    painter.drawRects(area_item)
-                    painter.setPen(QPen(Qt.red, 0.0))
+                            QtGui.QBrush(QtGui.QColor(88, 139, 174, 30)))
+                    painter.drawRects(
+                            area_item)
+                    painter.setPen(
+                            QtGui.QPen(QtCore.Qt.red, 0.0))
                     painter.drawRects(area_item)
             painter.restore()
 
@@ -125,7 +124,7 @@ class Item(QGraphicsObject):
         if len(self.m_searched)>0:
 
             painter.save()
-            painter.setPen(QPen(Qt.red, 0.0))
+            painter.setPen(QtGui.QPen(QtCore.Qt.red, 0.0))
             painter.drawRects(self.m_searched)
             painter.restore()
 
@@ -136,7 +135,8 @@ class Item(QGraphicsObject):
     def paintPage(self, painter, exposedRect):
 
         painter.fillRect(
-                self.m_boundingRect, QBrush(QColor('white')))
+                self.m_boundingRect, 
+                QtGui.QBrush(QtGui.QColor('white')))
         self.m_tileItems[0].paint(
                 painter, self.m_boundingRect.topLeft())
 
@@ -213,7 +213,8 @@ class Item(QGraphicsObject):
                 self.m_size.width(), 
                 self.m_size.height())
 
-        self.m_boundingRect=self.m_transform.mapRect(QRectF(QPointF(), self.m_size))
+        self.m_boundingRect=self.m_transform.mapRect(
+                QtCore.QRectF(QtCore.QPointF(), self.m_size))
 
         self.m_boundingRect.setWidth(
                 math.floor(self.m_boundingRect.width()))
@@ -224,7 +225,7 @@ class Item(QGraphicsObject):
 
     def prepareTiling(self):
 
-        rect=QRect(0, 0, int(self.m_boundingRect.width()), int(self.m_boundingRect.height()))
+        rect=QtCore.QRect(0, 0, int(self.m_boundingRect.width()), int(self.m_boundingRect.height()))
         self.m_tileItems[0].setRect(rect)
 
     def size(self): return self.m_size
@@ -268,7 +269,7 @@ class Item(QGraphicsObject):
 
     def mapToPage(self, polygon, unify=True):
 
-        if type(polygon) in [QPoint, QPointF]:
+        if type(polygon) in [QtCore.QPoint, QtCore.QPointF]:
             ununified=self.m_transform.inverted()[0].map(polygon)
             unified=self.m_normalizedTransform.inverted()[0].map(polygon)
         else:
@@ -283,7 +284,7 @@ class Item(QGraphicsObject):
 
     def mapToItem(self, polygon, isUnified=False):
 
-        if type(polygon) in [QPoint, QPointF]:
+        if type(polygon) in [QtCore.QPoint, QtCore.QPointF]:
             if isUnified: 
                 polygon=self.m_normalizedTransform.map(polygon)
             return self.m_transform.map(polygon)
@@ -327,7 +328,7 @@ class Item(QGraphicsObject):
 
     def addProxy(self, position, widget, hideOverlay):
 
-        proxy=QGraphicsProxyWidget(self)
+        proxy=QtWidgets.QGraphicsProxyWidget(self)
         proxy.setWidget(widget)
         widget.setFocus()
         proxy.setAutoFillBackground(True)
@@ -348,7 +349,8 @@ class Item(QGraphicsObject):
         width=min([width, self.m_boundingRect.right()-proxyPadding-x])
         height=min([height, self.m_boundingRect.bottom()-y])
 
-        proxy.setGeometry(QRectF(x, y, width, height))
+        proxy.setGeometry(
+                QtCore.QRectF(x, y, width, height))
 
     def scaledResolutionX(self): return self.scale()*self.devicePixelRatio()*self.xresol()
 
