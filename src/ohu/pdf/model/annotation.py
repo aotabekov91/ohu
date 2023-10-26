@@ -1,64 +1,18 @@
 from PyQt5 import QtCore
+from ohu.base.model import Annotation as Base
 
-class Annotation:
+class Annotation(Base):
 
     def __init__(self, data):
 
-        super().__init__()
-        self.m_data = data
+        super().__init__(data)
         self.m_aData={'data': data}
-
-    def setId(self, m_id): 
-
-        self.m_id=m_id
-        self.m_aData['id']=m_id
-
-    def position(self):
-
-        topLeft=self.m_data.highlightQuads()[0].points[0]
-        bottomRight=self.m_data.highlightQuads()[0].points[2]
-        x, y=topLeft.x(), topLeft.y()
-        x_, y_=bottomRight.x(), bottomRight.y()
-        first_line=':'.join(str(round(f, 5)) for f in [x, y, x_, y_])
-        topLeft=self.m_data.highlightQuads()[-1].points[0]
-        bottomRight=self.m_data.highlightQuads()[-1].points[2]
-        x, y=topLeft.x(), topLeft.y()
-        x_, y_=bottomRight.x(), bottomRight.y()
-        last_line=':'.join(str(round(f, 5)) for f in [x, y, x_, y_])
-        return f'{first_line}_{last_line}'
-
-    def contains(self, point):
-
-        for quad in self.m_data.highlightQuads():
-            points=quad.points
-            rectF=QtCore.QRectF()
-            rectF.setTopLeft(points[0])
-            rectF.setTopRight(points[1])
-            rectF.setBottomRight(points[2])
-            rectF.setBottomLeft(points[3])
-            if rectF.contains(point): 
-                return True
-        return False
-
-    def setColor(self, color):
-
-        style.setColor(color)
-        self.m_data.setStyle(style)
 
     def id(self): 
         return self.m_aData.get('id', None)
 
-    def page(self): 
-        return self.m_page
-
     def contents(self): 
         return self.m_data.contents()
-
-    def setPage(self, page): 
-        self.m_page=page
-
-    def color(self): 
-        return self.m_aData['data'].style().color().name()
 
     def type(self): 
         return self.m_aData['data'].subType()
@@ -74,3 +28,55 @@ class Annotation:
 
     def boundary(self): 
         return self.m_aData['data'].boundary()
+
+    def setId(self, idx): 
+
+        super().setId(idx)
+        self.m_aData['id']=idx
+
+    def setColor(self, color):
+
+        style=self.m_aData['data'].style()
+        style.setColor(color)
+        self.m_data.setStyle(style)
+
+    def color(self): 
+
+        style=self.m_aData['data'].style()
+        return style.color().name()
+
+    def position(self):
+
+        d=self.m_data
+        q=d.highlightQuads()
+        tl=q[0].points[0]
+        br=q[0].points[2]
+        tx, ty =tl.x(), tl.y()
+        bx, by = br.x(), br.y()
+        p=[]
+        for f in [tx, ty, bx, by]:
+            p+=[str(round(f, 5))]
+        fl=':'.join(p)
+        tl=q[-1].points[0]
+        br=q[-1].points[2]
+        tx, ty = tl.x(), tl.y()
+        bx, by = br.x(), br.y()
+        p=[]
+        for f in [tx, ty, bx, by]:
+            p+=[str(round(f, 5))]
+        ll=':'.join(p)
+        return f'{fl}_{ll}'
+
+    def contains(self, point):
+
+        q=self.m_data.highlightQuads()
+        for i in q: 
+            p=i.points
+            r=QtCore.QRectF()
+            r.setTopLeft(p[0])
+            r.setTopRight(p[1])
+            r.setBottomRight(p[2])
+            r.setBottomLeft(p[3])
+            if r.contains(point): 
+                return True
+        return False

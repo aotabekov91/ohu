@@ -1,72 +1,69 @@
-from PyQt5 import QtCore, QtGui
-
 from popplerqt5 import Poppler
+from PyQt5 import QtCore, QtGui
+from ohu.base.model import Element as Base
+
 from .annotation import Annotation
 
-class Page:
+class Element(Base):
 
-    def __init__(
-            self, 
-            popplerPage, 
-            pageNumber, 
-            document
-            ):
+    def textList(self): 
+        return self.data().textList()
 
-        super(Page, self).__init__()
-        self.m_annotations=[]
-        self.m_document=document
-        self.m_data = popplerPage
-        self.m_pageNumber=pageNumber
-        self.m_normalizedTransform=QtGui.QTransform()
-        self.m_normalizedTransform.reset()
-        self.m_normalizedTransform.scale(
-                self.size().width(), 
-                self.size().height())
-        self.m_native_annotations=self.getNativeAnnotations()
-
-    def document(self): 
-        return self.m_document
-
-    def pageNumber(self): 
-        return self.m_pageNumber
-
-    def pageItem(self): 
-        return self.m_pageItem
-
-    def setPageItem(self, pageItem): 
-        self.m_pageItem=pageItem
+    def nativeAnnotations(self): 
+        return self.m_natives
 
     def size(self): 
         return self.m_data.pageSizeF()
 
-    def render(
-            self, 
-            hResol=72, 
-            vResol=72, 
-            rotate=0, 
-            boundingRect=None
-            ):
-
-        x, y, w, h = (-1,)*4
-        if boundingRect:
-            x = int(boundingRect.x())
-            y = int(boundingRect.y())
-            w = int(boundingRect.width())
-            h = int(boundingRect.height())
-
-        return self.m_data.renderToImage(
-                hResol, vResol, x, y, w, h, rotate)
-
     def find(self, rect, unified=False): 
 
         if unified: 
-            rect=self.m_normalizedTransform.mapRect(rect)
+            rect=self.m_norm.mapRect(rect)
         return self.m_data.text(rect)
 
     def search(self, string): 
 
         return self.m_data.search(
-                string, Poppler.Page.CaseInsensitive)
+                string, 
+                Poppler.Page.CaseInsensitive)
+
+    def setup(self):
+
+        super().setup()
+        self.m_annotations=[]
+        self.setTransformers()
+        self.m_natives=self.getNativeAnnotations()
+
+    def annotations(self):
+        return self.m_annotations
+
+    def setAnnotations(self, annotations=[]):
+        self.m_annotations=annotations
+
+    def setTransformers(self):
+
+        s=self.size()
+        w, h = s.width(), s.height()
+        self.m_norm=QtGui.QTransform()
+        self.m_norm.reset()
+        self.m_norm.scale(w, h)
+
+    def render(
+            self, 
+            hres=72, 
+            vres=72, 
+            rotate=0, 
+            rect=None
+            ):
+
+        x, y, w, h = (-1,)*4
+        if rect:
+            x = int(rect.x())
+            y = int(rect.y())
+            w = int(rect.width())
+            h = int(rect.height())
+        return self.m_data.renderToImage(
+                hres, vres, x, y, w, h, rotate)
 
     def annotate(self, aData, kind, **kwargs):
 
@@ -108,7 +105,7 @@ class Page:
         annotation.setBoundary(bound)
         self.m_data.addAnnotation(annotation)
         ann=Annotation(annotation)
-        ann.setPage(self)
+        ann.setElement(self)
         return ann
 
     def addTextAnnotation(self, boundary, color):
@@ -125,7 +122,7 @@ class Page:
         annotation.setPopup(popup)
         self.m_data.addAnnotation(annotation)
         ann=Annotation(annotation)
-        ann.setPage(self)
+        ann.setElement(self)
         return ann
 
     def removeAnnotation(self, aData):
@@ -139,9 +136,6 @@ class Page:
                 self.m_data.removeAnnotation(
                         d['pAnn'].data())
 
-    def nativeAnnotations(self): 
-        return self.m_native_annotations
-
     def getNativeAnnotations(self):
 
         annotations=[]
@@ -154,12 +148,9 @@ class Page:
             if cond:
                 data.setContents(self.find(data.boundary(), unified=True))
                 annotation=Annotation(data)
-                annotation.setPage(self)
+                annotation.setElement(self)
                 annotations+=[annotation]
         return annotations
-
-    def annotations(self): 
-        return self.m_annotations
 
     def links(self):
 
@@ -192,12 +183,9 @@ class Page:
                 url = link.fileName()
                 data={'boundary': boundary, 'path': url}
             if data:
-                data['sourcePage'] = self.pageNumber()
+                data['sourcePage'] = self.index()
                 links.append(data)
         return links
-
-    def data(self): 
-        return self.m_data
 
     def getRows(self, start, end):
 
@@ -249,13 +237,10 @@ class Page:
 
     def getRow(self, point):
 
-        for tData in self.data().textList():
-            if tData.boundingBox().contains(point):
+        for d in self.data().textList():
+            if d.boundingBox().contains(point):
                 return {
-                        'data': [tData], 
-                        'box':[tData.boundingBox()], 
-                        'text':tData.text()
+                        'data': [d], 
+                        'box':[d.boundingBox()], 
+                        'text':d.text()
                         }
-
-    def textList(self): 
-        return self.data().textList()

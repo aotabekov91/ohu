@@ -93,7 +93,7 @@ class View(BaseView):
             if self.s_settings.get('continuousMode', True):
                 p.setVisible(True)
             else:
-                if self.m_layout.left(idx) == self.m_curr:
+                if self.m_layout.leftIndex(idx) == self.m_curr:
                     p.setVisible(True)
                     top = brect.top()# -  self.s_settings.get('pageSpacing', 0.0)
                     height = brect.height()# + 2. *  self.s_settings.get('pageSpacing', 0,0)
@@ -178,8 +178,8 @@ class View(BaseView):
         v=QtCore.QRect(x, y, w, h)
         items=self.items(v)
         if items:
-            p=items[0].page()
-            pnum=p.index()
+            page=items[0].page()
+            pnum=page.index()
             self.setCurrentPage(pnum)
 
     def scaleMode(self):
@@ -340,7 +340,7 @@ class View(BaseView):
         p = digit or len(self.m_elements)
         p-=1
         if p >= 0 and p <= len(self.m_elements):
-            cp=self.m_layout.current(p)
+            cp=self.m_layout.currentPage(p)
             c = self.m_curr != cp 
             c = any([c, abs(x-left) > 0.001])
             c = any([c, abs(y-top) > 0.001])

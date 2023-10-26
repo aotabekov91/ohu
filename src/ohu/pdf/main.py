@@ -1,41 +1,32 @@
 import os
 import hashlib
-from plug.qt.plugs.render import Render
+from ohu.base import Render
 
 from .view import View
 from .model import Model
 
 class PdfRender(Render):
 
-    def setId(self, path, model):
+    def initiate(self):
 
-        if os.path.isfile(path):
-            path=os.path.expanduser(path)
-            file_hash = hashlib.md5()
-            with open(path, 'rb') as f:
+        super().initiate(
+                view=View, model=Model)
+
+    def setId(self, source, model):
+
+        if os.path.isfile(source):
+            source=os.path.expanduser(source)
+            shash = hashlib.md5()
+            with open(source, 'rb') as f:
                 chunk = f.read(4096)
                 while chunk:
-                    file_hash.update(chunk)
+                    shash.update(chunk)
                     chunk = f.read(4096)
-            dhash=file_hash.hexdigest()
+            dhash=shash.hexdigest()
             model.setId(dhash)
 
-    def isCompatible(self, path):
+    def isCompatible(self, source):
         
-        if path:
-            path=path.lower()
-            return path.endswith('pdf')
-
-    def readFile(self, path):
-
-        if self.isCompatible(path):
-            return Model(path)
-
-    def readModel(self, model):
-
-        if model:
-            path=model.filePath()
-            if self.isCompatible(path):
-                view=View(self.app)
-                view.setModel(model)
-                return view
+        if source:
+            source=source.lower()
+            return source.endswith('pdf')

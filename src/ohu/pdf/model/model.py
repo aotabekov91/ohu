@@ -1,96 +1,85 @@
 from popplerqt5 import Poppler
 from PyQt5 import QtCore, QtGui
+from ohu.base.model import Model as Base
 
-from .page import Page
+from .element import Element
 
-class Model:
+class Model(Base):
 
-    def __init__(self, filePath):
+    def load(self, source):
 
-        super().__init__()
-        self.m_data=None
-        self.m_hash=None
-        self.m_filePath=filePath
-        self.readFilepath(filePath)
-
-    def readFilepath(self, filePath):
-
-        (d, p) =self.loadDocument(filePath)
-        self.m_data, self.m_pages= (d, p)
-
-    def loadDocument(self, filePath):
-
-        m_data = Poppler.Document.load(filePath)
-        if m_data:
-            m_data.setRenderHint(Poppler.Document.Antialiasing)
-            m_data.setRenderHint(Poppler.Document.TextAntialiasing)
-            m_pages=self.setPages(m_data)
-            return m_data, m_pages
-        else:
-            return None, {}
+        d, e = None, {}
+        pd=Poppler.Document
+        d = pd.load(source)
+        if d:
+            d.setRenderHint(pd.Antialiasing)
+            d.setRenderHint(pd.TextAntialiasing)
+            e=self.setElements(d)
+        self.m_data, self.m_elements = d, e
 
     def nativeAnnotations(self):
 
-        annotations=[]
-        for pageNumber, page in self.m_pages.items():
-            annotations+=page.nativeAnnotations()
-        return annotations
+        anns=[]
+        for i, p in self.m_elements.items():
+            anns+=p.nativeAnnotations()
+        return anns
 
     def annotations(self):
 
-        annotations=[]
-        for pageNumber, page in self.m_pages.items():
-            annotations+=page.annotations()
-        return annotations
+        anns=[]
+        for i, p in self.m_elements.items():
+            anns+=p.annotations()
+        return anns
 
-    def save(self, filePath, withChanges):
+    def save(self, source, withChanges):
 
-        pdfConverter=self.m_data.pdfConverter()
-        pdfConverter.setOutputFileName(filePath)
-
+        pconf=self.m_data.pdfConverter()
+        pconf.setOutputFileName(source)
         if withChanges:
-            condition = pdfConverter.pdfOptions() or Poppler.PDFConverter.WithChanges
-            pdfConverter.setPDFOptions(condition)
+            c1 = pconf.pdfOptions()
+            c2 = Poppler.PDFConverter.WithChanges
+            pconf.setPDFOptions(c1 or c2)
+        return pconf.convert()
 
-        return pdfConverter.convert()
+    def setElements(self, data):
 
-
-    def setPages(self, m_data):
-
-        m_pages={}
-        for i in range(m_data.numPages()):
-            page=Page(m_data.page(i), pageNumber=i+1, document=self)
-            m_pages[i+1] = page
-        return m_pages
+        e={}
+        for i in range(data.numPages()):
+            d=data.page(i)
+            e[i] = Element(
+                    data=d, 
+                    index=i, 
+                    model=self
+                    )
+        return e
 
     def search(self, text):
 
-        found={}
-        for i, page in enumerate(self.pages()):
-            match=page.search(text)
-            if len(match)>0:
-                found[i]=match
-        return found
+        f={}
+        for i, p in enumerate(self.elements()):
+            m=p.search(text)
+            if len(m)>0: f[i]=m
+        return f
 
     def loadOutline(self):
 
-        toc=self.m_data.toc()
-        outlineModel=QtGui.QStandardItemModel()
-        if toc!=0:
+        t=self.m_data.toc()
+        m=QtGui.QStandardItemModel()
+        if t!=0:
             try:
-                self.outline(
+                self.getOutline(
                         self.m_data,
-                        toc.firstChild(),
-                        outlineModel.invisibleRootItem()
+                        t.firstChild(),
+                        m.invisibleRootItem()
                         )
             except:
                 pass
-        return outlineModel
+        return m
 
-    def outline(self, document, node, parent):
+    def getOutline(self, data, child, root):
 
         linkDestination=0
-        element=node.toElement()
+        element=child.toElement()
         item=QtGui.QStandardItem(element.tagName())
         item.setFlags(
                 QtCore.Qt.ItemIsEnabled or QtCore.Qt.ItemIsSelectable)
@@ -106,8 +95,8 @@ class Model:
             page=linkDestination.pageNumber()
             if page<1: 
                 page=1
-            if page>document.numPages(): 
-                page=document.numPages()
+            if page>data.numPages(): 
+                page=data.numPages()
             if linkDestination.isChangeLeft():
                 left=linkDestination.left()
                 if left<0.: left=0.
@@ -126,74 +115,33 @@ class Model:
             pageItem.setTextAlignment(QtCore.Qt.AlignRight)
             # if allow also pages the look of outline becomes ugly
             # parent.appendRow([item, pageItem])
-            parent.appendRow(item)
-        siblingNode=node.nextSibling()
+            root.appendRow(item)
+        siblingNode=child.nextSibling()
         if not siblingNode.isNull():
-            self.outline(document, siblingNode, parent)
-        childNode=node.firstChild()
+            self.getOutline(data, siblingNode, root)
+        childNode=child.firstChild()
         if not childNode.isNull():
-            self.outline(document, childNode, item)
+            self.getOutline(data, childNode, item)
 
-    def __eq__(self, other): 
-        return self.m_data==other.m_data
+    def getPosition(self, bounds):
 
-    def __hash__(self): 
-        return hash(self.m_data)
-
-    def id(self): 
-        return self.m_id
-
-    def setId(self, m_id): 
-        self.m_id=m_id
-
-    def filePath(self): 
-        return self.m_filePath
-
-    def readSuccess(self): 
-        return self.m_data is not None
-
-    def numberOfPages(self): 
-        return self.m_data.numPages()
-
-    def setHash(self, dhash): 
-        self.m_hash=dhash
-
-    def hash(self): 
-        return self.m_hash
-
-    def author(self): 
-        return self.m_data.author()
-
-    def title(self): 
-        return self.m_data.title()
-
-    def page(self, pageNumber): 
-        return self.m_pages.get(pageNumber, None)
-
-    def pages(self): 
-        return self.m_pages
-
-    @staticmethod
-    def getPosition(boundaries):
-        text=[]
-        for b in boundaries: 
+        t=[]
+        for b in bounds: 
             x=str(b.x())[:6]
             y=str(b.y())[:6]
             w=str(b.width())[:6]
             h=str(b.height())[:6]
-            text+=[f'{x}:{y}:{w}:{h}']
-        return '_'.join(text)
+            t+=[f'{x}:{y}:{w}:{h}']
+        return '_'.join(t)
 
-    @staticmethod
-    def getBoundaries(position):
+    def getBoundaries(self, pos):
 
-        areas=[]
-        for t in position.split('_'):
+        a=[]
+        for t in pos.split('_'):
             x, y, w, h = tuple(t.split(':'))
-            areas+=[QtCore.QRectF(
+            a+=[QtCore.QRectF(
                 float(x), 
                 float(y), 
                 float(w), 
-                float(h)
-                )]
-        return areas
+                float(h))]
+        return a
