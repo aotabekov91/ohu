@@ -70,8 +70,14 @@ class View(BaseView):
 
     def item(self, idx=None):
 
-        idx = idx or self.m_curr
+        if idx is not None:
+            idx-=1
+        else:
+            idx=self.m_curr
         return self.m_items[idx]
+
+    def currentItem(self):
+        return self.item()
 
     def readjust(self):
 
@@ -145,7 +151,7 @@ class View(BaseView):
     def reportPosition(self):
 
         x, y = self.getPosition()
-        i=self.item()
+        i=self.currentItem()
         self.positionChanged.emit(
                 self, i, x, y) 
 
@@ -204,7 +210,7 @@ class View(BaseView):
         if self.m_curr!=pnum:
             self.m_prev=self.m_curr
             self.m_curr=pnum
-            c=self.item()
+            c=self.currentItem()
             self.itemChanged.emit(self, c)
         self.reportPosition()
         
@@ -215,7 +221,7 @@ class View(BaseView):
 
     def update(self, refresh=False):
 
-        i=self.item()
+        i=self.currentItem()
         i.refresh(dropCache=refresh)
 
     def updateAll(self, refresh=False):

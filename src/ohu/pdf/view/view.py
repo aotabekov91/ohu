@@ -85,6 +85,7 @@ class View(Base):
             c = any([c, abs(x-x) > 0.001])
             c = any([c, abs(y-y) > 0.001])
             if c:
+                print(x, y, p)
                 self.prepareView(x, y, p)
                 self.setVisiblePage()
 
