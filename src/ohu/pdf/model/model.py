@@ -46,9 +46,9 @@ class Model(Base):
         e={}
         for i in range(data.numPages()):
             d=data.page(i)
-            e[i] = Element(
+            e[i+1] = Element(
                     data=d, 
-                    index=i, 
+                    index=i+1,
                     model=self
                     )
         return e

@@ -7,7 +7,7 @@ class Tile(QtCore.QObject):
     def __init__(self, parent):
 
         super().__init__(parent)
-        self.m_parent=parent
+        self.m_item=parent
         self.m_pixmapError = False
         self.s_cache=parent.s_cache
         self.m_rect = QtCore.QRect()
@@ -16,8 +16,8 @@ class Tile(QtCore.QObject):
         self.m_obsoletePixmap = QtGui.QPixmap()
         self.setup()
 
-    def pageItem(self): 
-        return self.m_parent
+    def item(self): 
+        return self.m_item
 
     def setup(self):
 
@@ -110,16 +110,16 @@ class Tile(QtCore.QObject):
             del self
 
     def on_renderTask_finished(self):
-        self.pageItem().update()
+        self.item().update()
 
     def cacheKey(self):
 
-        page = self.pageItem()
+        page = self.item()
         size=self.m_rect
         data = (
-            self.pageItem().xresol(),
-            self.pageItem().yresol(),
-            self.pageItem().scale(),
+            self.item().xresol(),
+            self.item().yresol(),
+            self.item().scale(),
             (size.x(), size.y(), size.width(), size.height()),
         )
         return (page, data)

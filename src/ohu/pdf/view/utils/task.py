@@ -5,6 +5,7 @@ class Task(QtCore.QObject, QtCore.QRunnable):
     NotCanceled=0
     CanceledNormally=1
     CanceledForcibly=2
+
     finished = QtCore.pyqtSignal()
     imageReady = QtCore.pyqtSignal(
             'QRect', bool, 'QImage')
@@ -20,7 +21,6 @@ class Task(QtCore.QObject, QtCore.QRunnable):
 
     def setup(self):
 
-        self.setAutoDelete(False)
         self.m_waitCondition=QtCore.QWaitCondition()
 
     def start(self, rect, prefetch):
@@ -31,12 +31,7 @@ class Task(QtCore.QObject, QtCore.QRunnable):
         self.m_isRunning = True
         self.m_mutex.unlock()
         self.m_wasCanceled=self.NotCanceled
-        # QThreadPool.globalInstance().start(self, int(~prefetch))
-        # QThreadPool.globalInstance().start(self)
         self.run()
-
-    def setAutoDelete(self, condition):
-        pass
 
     def cancel(self, force=False):
 
@@ -45,14 +40,10 @@ class Task(QtCore.QObject, QtCore.QRunnable):
             self.m_wasCanceled=self.CanceledForcibly
 
     def wait(self):
-
-        mutexLocker=QtCore.QMutexLocker(self.m_mutex)
         while self.m_isRunning:
             self.m_waitCondition.wait(self.m_mutex)
 
     def isRunning(self):
-
-        mutexLocker = QtCore.QMutexLocker(self.m_mutex)
         return self.m_isRunning
 
     def wasCanceled(self):
@@ -64,21 +55,21 @@ class Task(QtCore.QObject, QtCore.QRunnable):
     def wasCanceledForcibly(self):
         return self.m_wasCanceled==self.CanceledForcibly
 
-    def page(self):
-        return self.parent().pageItem().page()
+    def element(self):
+        return self.item().element()
 
-    def pageItem(self):
-        return self.parent().pageItem()
+    def item(self):
+        return self.parent().item()
 
     def run(self):
 
-        image = self.page().render(
-            self.pageItem().scaledResolutionX(),
-            self.pageItem().scaledResolutionY(),
-            self.pageItem().rotation(),
+        image = self.element().render(
+            self.item().scaledResolutionX(),
+            self.item().scaledResolutionY(),
+            self.item().rotation(),
             self.m_rect)
 
-        image.setDevicePixelRatio(self.pageItem().devicePixelRatio())
+        image.setDevicePixelRatio(self.item().devicePixelRatio())
         self.imageReady.emit(self.m_rect, self.m_prefetch, image)
         self.finish()
 

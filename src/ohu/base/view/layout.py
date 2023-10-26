@@ -13,20 +13,20 @@ class Layout:
         self.modes=modes
         self.m_mode=modes[mode](config)
 
-    def layoutMode(self): 
+    def mode(self): 
         return self.m_mode
 
-    def leftIndex(self, idx, count): 
-        return self.m_mode.leftIndex(idx)
+    def left(self, idx, count=None): 
+        return self.m_mode.left(idx, count)
 
-    def rightIndex(self, idx, count): 
-        return self.m_mode.rightIndex(idx, count)
+    def right(self, idx, count=None): 
+        return self.m_mode.right(idx, count)
 
-    def upIndex(self, idx, count): 
-        return self.m_mode.upIndex(idx, count)
+    def up(self, idx, count=None): 
+        return self.m_mode.up(idx, count)
 
-    def downIndex(self, idx, count): 
-        return self.m_mode.downIndex(idx, count)
+    def down(self, idx, count=None): 
+        return self.m_mode.down(idx, count)
 
     def width(self, width): 
         return self.m_mode.width(width)
@@ -34,13 +34,13 @@ class Layout:
     def height(self, height):
         return self.m_mode.height(height)
 
-    def next(self, idx, count): 
+    def next(self, idx, count=None): 
         return self.m_mode.next(idx, count)
 
-    def prev(self, idx, count): 
+    def prev(self, idx, count=None): 
         return self.m_mode.prev(idx, count)
 
-    def current(self, idx, count):
+    def current(self, idx, count=None):
         return self.m_mode.current(idx, count)
 
     def load(

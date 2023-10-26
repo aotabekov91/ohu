@@ -1,10 +1,9 @@
-from PyQt5.QtCore import QObject, Qt 
+from PyQt5.QtCore import QObject
 
 class Cursor(QObject):
 
     def __init__(self, view): 
 
-        self.start=None
         super().__init__(view)
         view.itemMouseMoveOccured.connect(
                 self.on_mouseMove)
@@ -14,47 +13,19 @@ class Cursor(QObject):
                 self.on_mouseRelease)
         view.itemMouseDoubleClickOccured.connect(
                 self.on_doubleClick)
+        self.setup()
 
-    def move(self, event, item):
+    def setup(self):
+        pass
 
-        s=self.start
-        point=item.mapToPage(
-                event.pos(), unify=False)
-        c=item.page().getRow(point)
-        if s and c:
-            s=item.page().getRows(
-                    s['box'][0], c['box'][0])
-            item.select([s])
+    def on_mouseMove(self, view, item, event): 
+        pass
 
-    def on_mousePress(
-            self, view, item, event):
+    def on_mouseRelease(self, view, item, event): 
+        pass
 
-        page=item.page()
-        item.prev_cursor=item.cursor()
-        item.setCursor(Qt.IBeamCursor)
-        point=item.mapToPage(
-                event.pos(), 
-                unify=False)
-        self.start=page.getRow(
-                point)
+    def on_mousePress(self, view, item, event):
+        pass
 
-    def on_mouseMove(
-            self, view, item, event): 
-        self.move(event, item)
-
-    def on_mouseRelease(
-            self, view, item, event): 
-        item.setCursor(item.prev_cursor)
-
-    def on_doubleClick(
-            self, view, item, event):
-
-        s=[]
-        page=item.page()
-        point=item.mapToPage(
-                event.pos(), 
-                unify=False
-                )
-        data=page.getRow(point)
-        if data: s+=[data] 
-        item.select(s)
+    def on_doubleClick(self, view, item, event):
+        pass
