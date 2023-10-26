@@ -381,7 +381,6 @@ class View(BaseView):
         bar.setValue(int(dx))
         self.setVisiblePage()
 
-
     def setZoom(self, kind='out', digit=1):
 
         if self.scaleMode() != 'ScaleFactor': 
