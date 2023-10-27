@@ -18,7 +18,6 @@ class PdfView(View):
                 cursor_class=Cursor,
                 **kwargs
                 )
-        print(self.m_layout.m_mode.pageSpacing)
 
     def prepareView(self, x=0, y=0, p=0):
 

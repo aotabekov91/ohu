@@ -1,3 +1,5 @@
+import os
+import hashlib
 from popplerqt5 import Poppler
 from PyQt5 import QtCore, QtGui
 from gizmo.ui.view.model import Model as Base
@@ -5,6 +7,19 @@ from gizmo.ui.view.model import Model as Base
 from .element import Element
 
 class PdfModel(Base):
+
+    def assignId(self, source, model=None):
+
+        if os.path.isfile(source):
+            source=os.path.expanduser(source)
+            shash = hashlib.md5()
+            with open(source, 'rb') as f:
+                chunk = f.read(4096)
+                while chunk:
+                    shash.update(chunk)
+                    chunk = f.read(4096)
+            dhash=shash.hexdigest()
+            self.setId(dhash)
 
     def load(self, source):
 
