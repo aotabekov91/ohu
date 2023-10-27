@@ -1,16 +1,17 @@
 import os
 import hashlib
-from ohu.base import Render
+from plug.qt.plugs.render import Render
 
-from .view import View
-from .model import Model
+from .view import PdfView
+from .model import PdfModel
 
-class PdfRender(Render):
+class PdfPoppler(Render):
 
     def initiate(self):
 
         super().initiate(
-                view=View, model=Model)
+                view_class=PdfView, 
+                model_class=PdfModel)
 
     def setId(self, source, model):
 
@@ -30,3 +31,4 @@ class PdfRender(Render):
         if source:
             source=source.lower()
             return source.endswith('pdf')
+        return super().isCompatible(source)

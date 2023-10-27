@@ -1,14 +1,14 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 from gizmo.ui.view.item import Item as Base
 
-from .utils.tile import Tile
+from .tile import Tile
 
 class Item(Base):
 
     def setup(self):
 
         super().setup()
-        if not self.m_use_tiling: 
+        if not self.useTiling: 
             tile=Tile(self)
             self.m_tileItems=[tile]
         self.redraw()

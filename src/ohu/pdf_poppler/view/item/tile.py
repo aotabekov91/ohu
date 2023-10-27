@@ -4,44 +4,45 @@ from .task import Task
 
 class Tile(QtCore.QObject):
 
-    def __init__(self, parent):
+    def __init__(self, item):
 
-        super().__init__(parent)
-        self.m_item=parent
-        self.m_pixmapError = False
-        self.m_cache=parent.m_cache
+        self.m_item=item
+        self.m_error = False
+        self.m_cache=item.m_cache
         self.m_rect = QtCore.QRect()
         self.m_pixmap = QtGui.QPixmap()
         self.m_cropRect = QtCore.QRectF() 
         self.m_obsoletePixmap = QtGui.QPixmap()
+        super().__init__(item)
         self.setup()
-
-    def item(self): 
-        return self.m_item
 
     def setup(self):
 
-        self.m_renderTask = Task(self)
-        self.m_renderTask.finished.connect(
+        self.m_runner = Task(self)
+        self.m_runner.finished.connect(
             self.on_renderTask_finished)
-        self.m_renderTask.imageReady.connect(
+        self.m_runner.imageReady.connect(
             self.on_renderTask_imageReady)
-        self.m_renderTask.cancel(True)
-        self.m_renderTask.wait()
+        self.m_runner.cancel(True)
+        self.m_runner.wait()
 
     def on_renderTask_imageReady(
-            self, rect, prefetch, image):
+            self, rect, prefetch, img):
 
-        if image is None:
-            self.m_pixmapError=True
+        if img is None:
+            self.m_error=True
             return
         if self.m_rect==rect:
             self.m_obsoletePixmap=QtGui.QPixmap()
-            if prefetch and not self.m_renderTask.wasCanceledForcibly():
-                self.m_cache[self.cacheKey()]=QtGui.QPixmap.fromImage(image)
-            elif not self.m_renderTask.wasCanceled():
-                # image=self.revert(image)
-                self.m_pixmap=QtGui.QPixmap.fromImage(image)
+            c=self.m_runner.wasCanceled()
+            f=self.m_runner.wasCanceledForcibly()
+            if prefetch and not f:
+                k=self.cacheKey()
+                p=QtGui.QPixmap.fromImage(img)
+                self.m_cache[k]=p
+            elif not c: 
+                pmap=QtGui.QPixmap.fromImage(img)
+                self.m_pixmap=pmap
 
     def revert(self, image):
 
@@ -60,69 +61,68 @@ class Tile(QtCore.QObject):
 
     def takePixmap(self):
 
-        key = self.cacheKey()
-        pixmap = self.m_cache.get(key)
+        k = self.cacheKey()
+        pmap = self.m_cache.get(k)
 
-        if self.isNotEmptyPixmap(pixmap):
+        if self.isNotEmptyPixmap(pmap):
             self.m_obsoletePixmap = QtGui.QPixmap() 
-            return pixmap
+            return pmap
         elif self.isNotEmptyPixmap(self.m_pixmap):
-            self.m_cache[key]=self.m_pixmap
-            pixmap = self.m_pixmap
+            self.m_cache[k]=self.m_pixmap
+            pmap = self.m_pixmap
             self.m_pixmap = QtGui.QPixmap() 
-            return pixmap
+            return pmap
         else:
             self.startRender()
 
     def refresh(self, dropCache=False):
 
         if not dropCache:
-            object_ = self.m_cache.get(self.cacheKey())
-            if object_ is not None:
-                self.m_obsoletePixmap = object_
+            obj = self.m_cache.get(self.cacheKey())
+            if obj :
+                self.m_obsoletePixmap = obj
         else:
-            key=self.cacheKey()
-            if key in self.m_cache:
-                self.m_cache.pop(key)
+            k=self.cacheKey()
+            if k in self.m_cache:
+                self.m_cache.pop(k)
             self.m_obsoletePixmap = QtGui.QPixmap() 
-        self.m_renderTask.cancel(True)
-        self.m_pixmapError = False
+        self.m_error = False
+        self.m_runner.cancel(True)
         self.m_pixmap =QtGui.QPixmap()
 
     def startRender(self, prefetch=False):
 
-        cond = self.m_pixmapError or self.m_renderTask.isRunning()
-        cond = cond or (prefetch and self.cacheKey() in self.m_cache)
-        if not cond: 
-            self.m_renderTask.start(
-                    self.m_rect, prefetch)
+        c1 = self.m_error or self.m_runner.isRunning()
+        c2 = prefetch and self.cacheKey() in self.m_cache
+        if c1 or c2:
+            return
+        self.m_runner.start(
+                self.m_rect, prefetch)
 
     def cancelRender(self):
 
-        self.m_renderTask.cancel()
+        self.m_runner.cancel()
         self.m_pixmap=QtGui.QPixmap()
         self.m_obsoletePixmap=QtGui.QPixmap()
 
     def deleteAfterRender(self):
 
         self.cancelRender()
-        if not self.m_renderTask.isRunning():
+        if not self.m_runner.isRunning():
             del self
 
     def on_renderTask_finished(self):
-        self.item().update()
+        self.m_item.update()
 
     def cacheKey(self):
 
-        page = self.item()
-        size=self.m_rect
+        s=self.m_rect
+        i = self.m_item
         data = (
-            self.item().xresol(),
-            self.item().yresol(),
-            self.item().scale(),
-            (size.x(), size.y(), size.width(), size.height()),
+            i.xresol, i.yresol, i.scale,
+            (s.x(), s.y(), s.width(), s.height()),
         )
-        return (page, data)
+        return (i, data)
 
     def rect(self):
         return self.m_rect
@@ -142,23 +142,19 @@ class Tile(QtCore.QObject):
             if k[0]==page: 
                 self.m_cache.pop(k)
 
-    def paint(self, painter, topLeft):
+    def paint(self, p, topLeft):
 
-        pixmap = self.takePixmap()
-        if self.isNotEmptyPixmap(pixmap):
-            painter.drawPixmap(
+        pmap = self.takePixmap()
+        if self.isNotEmptyPixmap(pmap):
+            p.drawPixmap(
                     self.m_rect.topLeft()+topLeft, 
-                    pixmap)
+                    pmap)
         elif self.isNotEmptyPixmap(self.m_obsoletePixmap):
-            painter.drawPixmap(
-                    QtCore.QRectF(self.m_rect).translated(topLeft), 
+            p=QtCore.QRectF(self.m_rect).translated(topLeft)
+            p.drawPixmap(
+                    p,
                     self.m_obsoletePixmap, 
                     QtCore.QRectF())
-        else:
-            if not self.m_pixmapError:
-                return
-            else:
-                raise
 
     def isNotEmptyPixmap(self, pixmap):
 

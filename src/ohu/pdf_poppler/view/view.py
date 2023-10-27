@@ -1,16 +1,24 @@
-from PyQt5 import QtCore
-from gizmo.ui.view import View as Base
+from gizmo.ui.view import View
 
 from .item import Item
 from .cursor import Cursor
 
-class View(Base):
+class PdfView(View):
 
-    def __init__(self, *args, **kwargs):
+    def __init__(
+            self, 
+            *args, 
+            item_class=Item,
+            cursur_class=Cursor,
+            **kwargs):
 
-        kwargs['item_class']=Item
-        kwargs['cursor_class']=Cursor
-        super().__init__(*args, **kwargs)
+        super().__init__(
+                *args, 
+                item_class=Item,
+                cursor_class=Cursor,
+                **kwargs
+                )
+        print(self.m_layout.m_mode.pageSpacing)
 
     def prepareView(self, x=0, y=0, p=0):
 
@@ -22,8 +30,7 @@ class View(Base):
         for j, i in enumerate(self.m_items):
             pbr = i.boundingRect()
             pos = pbr.translated(i.pos())
-            c=self.s_settings.get(
-                    'continuousMode', True)
+            c=self.continuousMode
             if c: 
                 i.setVisible(True)
             else:
@@ -49,23 +56,23 @@ class View(Base):
         for i in items:
             x=self.logicalDpiX()
             y=self.logicalDpiY()
-            i.setResolution(x, y)
+            i.setResol(x, y)
             dw= i.displayedWidth()
             dh = i.displayedHeight()
             fitPageSize=[w/float(dw), h/float(dh)]
             width_ratio=w/dw
             scale = {
-                'ScaleFactor': i.scale(),
+                'ScaleFactor': i.scale,
                 'FitToWindowWidth': width_ratio,
                 'FitToWindowHeight': min(fitPageSize)
                 }
-            s=scale[self.s_settings.get(
-                'scaleMode', 
-                'FitToWindowHeight'
-                )]
+            s=scale[self.scaleMode]
             i.setScaleFactor(s)
-        h = self.s_settings.get('pageSpacing', 0.0)
-        l, r, h = self.m_layout.load(items, height=h)
+        h = self.m_layout.m_mode.pageSpacing
+        l, r, h = self.m_layout.load(
+                items, 
+                height=h
+                )
         self.scene().setSceneRect(l, 0.0, r-l, h)
 
     def goto(
