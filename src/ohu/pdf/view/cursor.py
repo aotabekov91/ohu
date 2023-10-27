@@ -1,5 +1,5 @@
 from PyQt5.QtCore import Qt 
-from ohu.base.view.cursor import Cursor as Base
+from gizmo.ui.view.cursor import Cursor as Base
 
 class Cursor(Base):
 

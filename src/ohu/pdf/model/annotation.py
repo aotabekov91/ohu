@@ -1,5 +1,5 @@
 from PyQt5 import QtCore
-from ohu.base.model import Annotation as Base
+from gizmo.ui.model import Annotation as Base
 
 class Annotation(Base):
 

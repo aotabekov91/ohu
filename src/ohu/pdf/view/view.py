@@ -1,5 +1,5 @@
 from PyQt5 import QtCore
-from ohu.base.view import View as Base
+from gizmo.ui.view import View as Base
 
 from .item import Item
 from .cursor import Cursor
@@ -85,7 +85,6 @@ class View(Base):
             c = any([c, abs(x-x) > 0.001])
             c = any([c, abs(y-y) > 0.001])
             if c:
-                print(x, y, p)
                 self.prepareView(x, y, p)
                 self.setVisiblePage()
 

@@ -9,7 +9,7 @@ class Tile(QtCore.QObject):
         super().__init__(parent)
         self.m_item=parent
         self.m_pixmapError = False
-        self.s_cache=parent.s_cache
+        self.m_cache=parent.m_cache
         self.m_rect = QtCore.QRect()
         self.m_pixmap = QtGui.QPixmap()
         self.m_cropRect = QtCore.QRectF() 
@@ -38,7 +38,7 @@ class Tile(QtCore.QObject):
         if self.m_rect==rect:
             self.m_obsoletePixmap=QtGui.QPixmap()
             if prefetch and not self.m_renderTask.wasCanceledForcibly():
-                self.s_cache[self.cacheKey()]=QtGui.QPixmap.fromImage(image)
+                self.m_cache[self.cacheKey()]=QtGui.QPixmap.fromImage(image)
             elif not self.m_renderTask.wasCanceled():
                 # image=self.revert(image)
                 self.m_pixmap=QtGui.QPixmap.fromImage(image)
@@ -61,13 +61,13 @@ class Tile(QtCore.QObject):
     def takePixmap(self):
 
         key = self.cacheKey()
-        pixmap = self.s_cache.get(key)
+        pixmap = self.m_cache.get(key)
 
         if self.isNotEmptyPixmap(pixmap):
             self.m_obsoletePixmap = QtGui.QPixmap() 
             return pixmap
         elif self.isNotEmptyPixmap(self.m_pixmap):
-            self.s_cache[key]=self.m_pixmap
+            self.m_cache[key]=self.m_pixmap
             pixmap = self.m_pixmap
             self.m_pixmap = QtGui.QPixmap() 
             return pixmap
@@ -77,13 +77,13 @@ class Tile(QtCore.QObject):
     def refresh(self, dropCache=False):
 
         if not dropCache:
-            object_ = self.s_cache.get(self.cacheKey())
+            object_ = self.m_cache.get(self.cacheKey())
             if object_ is not None:
                 self.m_obsoletePixmap = object_
         else:
             key=self.cacheKey()
-            if key in self.s_cache:
-                self.s_cache.pop(key)
+            if key in self.m_cache:
+                self.m_cache.pop(key)
             self.m_obsoletePixmap = QtGui.QPixmap() 
         self.m_renderTask.cancel(True)
         self.m_pixmapError = False
@@ -92,7 +92,7 @@ class Tile(QtCore.QObject):
     def startRender(self, prefetch=False):
 
         cond = self.m_pixmapError or self.m_renderTask.isRunning()
-        cond = cond or (prefetch and self.cacheKey() in self.s_cache)
+        cond = cond or (prefetch and self.cacheKey() in self.m_cache)
         if not cond: 
             self.m_renderTask.start(
                     self.m_rect, prefetch)
@@ -138,8 +138,9 @@ class Tile(QtCore.QObject):
 
     def dropCaches(self, page):
 
-        for key, pixmap in list(self.s_cache.items()):
-            if key[0]==page: self.s_cache.pop(key)
+        for k, m in list(self.m_cache.items()):
+            if k[0]==page: 
+                self.m_cache.pop(k)
 
     def paint(self, painter, topLeft):
 

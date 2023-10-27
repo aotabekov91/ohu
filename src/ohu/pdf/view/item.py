@@ -1,5 +1,5 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
-from ohu.base.view.item import Item as Base
+from gizmo.ui.view.item import Item as Base
 
 from .utils.tile import Tile
 

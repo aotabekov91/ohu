@@ -37,7 +37,7 @@ class Item(QtWidgets.QGraphicsObject):
         self.m_searched=[]
         self.m_paint_links=False
         self.m_element = element
-        self.s_cache=view.s_cache
+        self.m_cache=view.m_cache
         self.m_size = element.size()
         self.select_pcolor=QtCore.Qt.red
         self.m_brect = QtCore.QRectF() 

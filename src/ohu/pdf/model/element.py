@@ -1,6 +1,6 @@
 from popplerqt5 import Poppler
 from PyQt5 import QtCore, QtGui
-from ohu.base.model import Element as Base
+from gizmo.ui.model import Element as Base
 
 from .annotation import Annotation
 
