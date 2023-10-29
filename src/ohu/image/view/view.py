@@ -19,8 +19,6 @@ class ImageView(View):
                 cursor_class=Cursor,
                 **kwargs
                 )
-        self.m_curr=0 #todo
-        self.prepareView()
 
     def prepareView(self, x=0, y=0, p=0):
 
@@ -29,29 +27,22 @@ class ImageView(View):
         r = s.sceneRect()
         l, t = r.left(), r.top()
         w, h = r.width(), r.height()
+
         for j, i in enumerate(self.m_items):
-            pbr = i.boundingRect()
-            pos = pbr.translated(i.pos())
-            c=self.continuousMode
-            if c: 
-                i.setVisible(True)
+            if j!=p:
+                i.setVisible(False)
             else:
-                print(self.m_layout.left(j), self.m_curr)
-                if self.m_layout.left(j) == self.m_curr:
-                    i.setVisible(True)
-                    t = pos.top()
-                    h = pos.height()
-                else:
-                    i.setVisible(False)
-                    i.cancelRender()
-            if j == p:
+                i.setVisible(True)
+                pbr = i.boundingRect()
+                pos = pbr.translated(i.pos())
+                t=pos.top()
+                h=pos.height()
                 hv = int(pos.left()+x*pos.width())
                 vv = int(pos.top()+y*pos.height())
-
-        self.setSceneRect(l, t, w, h)
-        self.horizontalScrollBar().setValue(hv)
-        self.verticalScrollBar().setValue(vv)
-        self.viewport().update()
+                self.setSceneRect(l, t, w, h)
+                self.horizontalScrollBar().setValue(hv)
+                self.verticalScrollBar().setValue(vv)
+                self.viewport().update()
 
     def prepareScene(self, w, h):
 
