@@ -51,7 +51,12 @@ class Item(Base):
             p.drawRects(self.m_searched)
             p.restore()
 
-    def select(self, selections=[]):
+    def select(
+            self, 
+            selections=[], 
+            dropCache=False,
+            **args
+            ):
 
         for s in selections:
             box=s['box']
@@ -64,6 +69,8 @@ class Item(Base):
                     b, unify=True)]
         self.m_view.select(selections)
         self.update()
+        if dropCache:
+            self.refresh(dropCache=True)
 
     def prepareGeometry(self):
 

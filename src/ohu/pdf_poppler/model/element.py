@@ -65,9 +65,10 @@ class Element(Base):
         return self.m_data.renderToImage(
                 hres, vres, x, y, w, h, rotate)
 
-    def annotate(self, aData, kind, **kwargs):
+    def annotate(self, **aData):
 
         c=aData['color']
+        kind=aData['akind']
         b=aData['boundaries']
         if kind=='highlightAnnotation':
             annotation=self.addHighlightAnnotation(

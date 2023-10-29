@@ -8,7 +8,10 @@ from .element import Element
 
 class PdfModel(Base):
 
-    def assignId(self, source, model=None):
+    def kind(self):
+        return 'document'
+
+    def assignId(self, source):
 
         if os.path.isfile(source):
             source=os.path.expanduser(source)
@@ -20,6 +23,8 @@ class PdfModel(Base):
                     chunk = f.read(4096)
             dhash=shash.hexdigest()
             self.setId(dhash)
+        else:
+            self.setId(None)
 
     def load(self, source):
 
@@ -31,19 +36,40 @@ class PdfModel(Base):
             d.setRenderHint(pd.TextAntialiasing)
             e=self.setElements(d)
         self.m_data, self.m_elements = d, e
+        self.assignId(source)
 
     def nativeAnnotations(self):
 
-        anns=[]
+        a=[]
         for i, p in self.m_elements.items():
-            anns+=p.nativeAnnotations()
-        return anns
+            a+=p.nativeAnnotations()
+        return a
+
+    def setannotations(self):
+
+        a=[]
+        for p in self.m_elements.values():
+            a+=p.annotations()
+        return a
 
     def annotations(self):
 
-        anns=[]
-        for i, p in self.m_elements.items():
-            anns+=p.annotations()
+        anns=self.setannotations()
+        nats=self.nativeAnnotations()
+        for a in anns:
+            a['type']='set'
+        for n in nats:
+            data={
+                  'pAnn':n,
+                  'type': 'native',
+                  'hash': self.id(),
+                  'kind': 'document',
+                  'text': n.contents(),
+                  'content': n.contents(),
+                  'page': n.element().index(),
+                  'color': QtGui.QColor(n.color()),
+                  }
+            anns+=[data]
         return anns
 
     def save(self, source, withChanges):
@@ -64,14 +90,14 @@ class PdfModel(Base):
             e[i+1] = Element(
                     data=d, 
                     index=i+1,
-                    model=self
-                    )
+                    model=self)
         return e
 
     def search(self, text):
 
         f={}
-        for i, p in enumerate(self.elements()):
+        elem=self.elements()
+        for i, p in enumerate(elem):
             m=p.search(text)
             if len(m)>0: f[i]=m
         return f
@@ -82,81 +108,62 @@ class PdfModel(Base):
         m=QtGui.QStandardItemModel()
         if t!=0:
             try:
-                self.getOutline(
-                        self.m_data,
-                        t.firstChild(),
-                        m.invisibleRootItem()
-                        )
+                d=self.m_data
+                c=t.firstChild()
+                r=m.invisibleRootItem()
+                self.getOutline(d, c, r)
             except:
                 pass
         return m
 
-    def getOutline(self, data, child, root):
+    def getOutline(self, d, c, r):
 
-        linkDestination=0
-        element=child.toElement()
-        item=QtGui.QStandardItem(element.tagName())
-        item.setFlags(
-                QtCore.Qt.ItemIsEnabled or QtCore.Qt.ItemIsSelectable)
-        if element.hasAttribute('Destination'):
-            linkDestination=Poppler.LinkDestination(
-                    element.attribute('Destination'))
-        elif element.hasAttribute('DestinationName'):
-            linkDestination=self.m_data.linkDestination(
-                    element.attribute('DestinationName'))
-        if linkDestination!=0:
+        t=QtCore.Qt
+        e=c.toElement()
+        ldes=0
+        i=QtGui.QStandardItem(e.tagName())
+        i.setFlags(t.ItemIsEnabled or t.ItemIsSelectable)
+        if e.hasAttribute('Destination'):
+            ldes=Poppler.LinkDestination(
+                    e.attribute('Destination'))
+        elif e.hasAttribute('DestinationName'):
+            ldes=self.m_data.linkDestination(
+                    e.attribute('DestinationName'))
+        if ldes!=0:
             top=0.
             left=0.
-            page=linkDestination.pageNumber()
-            if page<1: 
-                page=1
-            if page>data.numPages(): 
-                page=data.numPages()
-            if linkDestination.isChangeLeft():
-                left=linkDestination.left()
+            pn=ldes.pageNumber()
+            if pn<1: 
+                pn=1
+            if pn>d.numPages(): 
+                pn=d.numPages()
+            if ldes.isChangeLeft():
+                left=ldes.left()
                 if left<0.: left=0.
                 if left>1.: left=1.
-            if linkDestination.isChangeTop():
-                top=linkDestination.top()
+            if ldes.isChangeTop():
+                top=ldes.top()
                 if top<0.: top=0.
                 if top>1.: top=1.
-            del linkDestination
-            item.setData(page, QtCore.Qt.UserRole+1)
-            item.setData(left, QtCore.Qt.UserRole+2)
-            item.setData(top, QtCore.Qt.UserRole+3)
-            item.setData(element.tagName(), QtCore.Qt.UserRole+5)
-            pageItem=item.clone()
-            pageItem.setText(str(page))
+            del ldes
+            i.setData(pn, QtCore.Qt.UserRole+1)
+            i.setData(left, QtCore.Qt.UserRole+2)
+            i.setData(top, QtCore.Qt.UserRole+3)
+            i.setData(e.tagName(), QtCore.Qt.UserRole+5)
+            pageItem=i.clone()
+            pageItem.setText(str(pn))
             pageItem.setTextAlignment(QtCore.Qt.AlignRight)
             # if allow also pages the look of outline becomes ugly
             # parent.appendRow([item, pageItem])
-            root.appendRow(item)
-        siblingNode=child.nextSibling()
+            r.appendRow(i)
+        siblingNode=c.nextSibling()
         if not siblingNode.isNull():
-            self.getOutline(data, siblingNode, root)
-        childNode=child.firstChild()
-        if not childNode.isNull():
-            self.getOutline(data, childNode, item)
+            self.getOutline(d, siblingNode, r)
+        cnode=c.firstChild()
+        if not cnode.isNull():
+            self.getOutline(d, cnode, i)
 
-    def getPosition(self, bounds):
+    def annotate(self, idx=None, **kwargs):
 
-        t=[]
-        for b in bounds: 
-            x=str(b.x())[:6]
-            y=str(b.y())[:6]
-            w=str(b.width())[:6]
-            h=str(b.height())[:6]
-            t+=[f'{x}:{y}:{w}:{h}']
-        return '_'.join(t)
-
-    def getBoundaries(self, pos):
-
-        a=[]
-        for t in pos.split('_'):
-            x, y, w, h = tuple(t.split(':'))
-            a+=[QtCore.QRectF(
-                float(x), 
-                float(y), 
-                float(w), 
-                float(h))]
-        return a
+        e=self.element(idx)
+        if e: e.annotate(**kwargs)
