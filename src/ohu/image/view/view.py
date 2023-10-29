@@ -154,3 +154,18 @@ class ImageView(View):
                     x, y, w, h = tuple(i.split(':'))
                     t+=[r(f(x), f(y), f(w), f(h))]
                 return t
+            
+    def moveScreen(self, kind, digit=1):
+
+        i=self.currentItem()
+        if i:
+            idx=i.index()
+        if kind=='up':
+            idx-=1*digit
+            if idx<1: 
+                idx=self.count()
+        elif kind=='down':
+            idx+=1*digit
+            if idx>self.count():
+                idx=1
+        self.goto(idx)
