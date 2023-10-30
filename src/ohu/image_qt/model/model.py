@@ -3,18 +3,6 @@ from gizmo.ui.view.model import Model as Base
 
 from .element import Element
 
-fmt = ('.BMP', 
-       '.GIF', 
-       '.JPG',
-       '.JPEG', 
-       '.PNG', 
-       '.PBM', 
-       '.PGM', 
-       '.PPM', 
-       '.TIFF', 
-       '.XBM'
-       )
-
 class ImageQtModel(Base):
 
     f='|'.join([
@@ -41,19 +29,18 @@ class ImageQtModel(Base):
     def load(self, source):
 
         self.assignId(source)
-        self.m_data=self.getImages(self.m_id)
+        self.m_data=self.getFiles(self.m_id)
         self.setElements()
 
-    def getImages(self, folder):
+    def getFiles(self, dir):
         
-        data = []
-        if os.path.isdir(folder):
-            for file in os.listdir(folder):
-                if not file.upper().endswith(fmt):
-                    continue
-                p = os.path.join(folder, file)
-                data.append(p)
-        return data
+        d = []
+        if os.path.isdir(dir):
+            for f in os.listdir(dir):
+                if self.isCompatible(f):
+                    p = os.path.join(dir, f)
+                    d.append(p)
+        return d
 
     def setElements(self):
 

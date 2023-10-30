@@ -4,8 +4,7 @@ from gizmo.ui.view.model import Element as Base
 class Element(Base):
 
     def size(self):
-        s=self.m_data.size()
-        return QtCore.QSizeF(s.width(), s.height())
+        return QtCore.QSizeF(self.m_data.size())
 
     def setup(self):
 

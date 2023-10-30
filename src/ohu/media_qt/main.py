@@ -8,7 +8,6 @@ class MediaQt(Render):
 
     def initiate(self):
         super().initiate(
-                '.*(mp4)$',
                 MediaQtView, 
                 MediaQtModel,
                 )

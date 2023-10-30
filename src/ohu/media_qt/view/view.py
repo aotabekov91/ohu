@@ -1,5 +1,5 @@
-from PyQt5 import QtCore
 from gizmo.ui.view import View
+from PyQt5 import QtCore, QtMultimedia, QtMultimediaWidgets
 
 from .item import Item
 from .cursor import Cursor
@@ -20,54 +20,25 @@ class MediaQtView(View):
                 **kwargs
                 )
 
+    def setup(self, *args, **kwargs):
+
+        super().setup(*args, **kwargs)
+        self.player = QtMultimedia.QMediaPlayer()
+
+    def setItems(self, model):
+
+        self.output = QtMultimediaWidgets.QGraphicsVideoItem()
+        self.scene().addItem(self.output)
+        w_f = float(self.contentsRect().size().width())
+        h_f = float(self.contentsRect().size().height())
+        self.output.setSize(QtCore.QSizeF(w_f, h_f))
+        self.player.setVideoOutput(self.output)
+
     def prepareView(self, x=0, y=0, p=0):
 
-        vv, hv = 0, 0
-        s = self.scene()
-        r = s.sceneRect()
-        l, t = r.left(), r.top()
-        w, h = r.width(), r.height()
-
-        for j, i in enumerate(self.m_items):
-            if j!=p:
-                i.setVisible(False)
-            else:
-                i.setVisible(True)
-                pbr = i.boundingRect()
-                pos = pbr.translated(i.pos())
-                t=pos.top()
-                h=pos.height()
-                hv = int(pos.left()+x*pos.width())
-                vv = int(pos.top()+y*pos.height())
-                self.setSceneRect(l, t, w, h)
-                self.horizontalScrollBar().setValue(hv)
-                self.verticalScrollBar().setValue(vv)
-                self.viewport().update()
-
-    def prepareScene(self, w, h):
-
-        items=self.getItems()
-        for i in items:
-            x=self.logicalDpiX()
-            y=self.logicalDpiY()
-            i.setResol(x, y)
-            dw= i.displayedWidth()
-            dh = i.displayedHeight()
-            fitPageSize=[w/float(dw), h/float(dh)]
-            width_ratio=w/dw
-            scale = {
-                'ScaleFactor': i.scale,
-                'FitToWindowWidth': width_ratio,
-                'FitToWindowHeight': min(fitPageSize)
-                }
-            s=scale[self.scaleMode]
-            i.setScaleFactor(s)
-        h = self.m_layout.m_mode.pageSpacing
-        l, r, h = self.m_layout.load(
-                items, 
-                height=h
-                )
-        self.scene().setSceneRect(l, 0.0, r-l, h)
+        self.fitInView(
+                self.output, 
+                QtCore.Qt.KeepAspectRatio)
 
     def goto(
             self, 
@@ -76,45 +47,14 @@ class MediaQtView(View):
             y=0.
             ):
 
-        c = self.count() 
-        x, y = self.getPosition()
-        p = digit or c 
-        p-=1
-        if 0 <= p < c:
-            cp=self.m_layout.current(p)
-            c = self.m_curr != cp 
-            c = any([c, abs(x-x) > 0.001])
-            c = any([c, abs(y-y) > 0.001])
-            if c:
-                self.prepareView(x, y, p)
-                self.setVisiblePage()
-
-    def cleanUp(self):
-
-        super().cleanUp()
-        for i in self.getItems(): 
-            i.select()
-            i.setSearched()
-
-    def initialize(self):
-
-        super().initialize()
-        self.fitToWindowWidth()
-
-    def yank(self):
-
-        selected=self.selected()
-        if selected: 
-            t=[]
-            for s in selected: 
-                t+=[s['text']]
-            clip=self.app.uiman.qapp.clipboard()
-            clip.setText(' '.join(t))
-            self.select()
-            self.refresh()
+        e=self.m_model.element(1)
+        c=e.render()
+        self.player.setMedia(c)
+        self.player.play()
 
     def open(self, *arg, **kwargs):
 
+        print(*arg, **kwargs)
         pos=kwargs.get('position', None)
         if pos:
             p=kwargs.get('page', None)
@@ -154,18 +94,9 @@ class MediaQtView(View):
                     x, y, w, h = tuple(i.split(':'))
                     t+=[r(f(x), f(y), f(w), f(h))]
                 return t
-            
-    def moveScreen(self, kind, digit=1):
 
-        i=self.currentItem()
-        if i:
-            idx=i.index()
-        if kind=='up':
-            idx-=1*digit
-            if idx<1: 
-                idx=self.count()
-        elif kind=='down':
-            idx+=1*digit
-            if idx>self.count():
-                idx=1
-        self.goto(idx)
+    def on_itemAdded(self, item):
+        pass
+
+    def setVisiblePage(self):
+        pass
