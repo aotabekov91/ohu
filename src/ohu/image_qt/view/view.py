@@ -4,7 +4,7 @@ from gizmo.ui.view import View
 from .item import Item
 from .cursor import Cursor
 
-class ImageView(View):
+class ImageQtView(View):
 
     def __init__(
             self, 

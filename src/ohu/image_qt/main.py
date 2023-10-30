@@ -1,18 +1,26 @@
+import re
 from plug.qt.plugs.render import Render
 
-from .view import ImageView
-from .model import ImageModel
+from .view import ImageQtView
+from .model import ImageQtModel
 
-class Image(Render):
+class ImageQt(Render):
 
     def initiate(self):
-        super().initiate(ImageView, ImageModel)
-
-    def isCompatible(self, source):
-        
-        if source:
-            s=source.lower()
-            return s.endswith('jpg')
+        f='|'.join([
+          'png', 
+          'bmp', 
+          'gif', 
+          'x[bp]m',
+          'p[bgp]m', 
+          'jp(e){0,1}g', 
+          ])
+        super().initiate(
+                f'.*({f})$',
+                ImageQtView, 
+                ImageQtModel,
+                )
+        print(self.pattern)
 
     def setView(self, view, **kwargs):
 

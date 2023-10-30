@@ -15,7 +15,7 @@ fmt = ('.BMP',
        '.XBM'
        )
 
-class ImageModel(Base):
+class ImageQtModel(Base):
 
     def kind(self):
         return 'image'
