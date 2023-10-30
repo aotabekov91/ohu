@@ -13,11 +13,6 @@ class MediaQt(Render):
                 MediaQtModel,
                 )
 
-    def isCompatible(self, source):
-        if source:
-            s=source.lower()
-            return re.match(self.pttr, s)
-
     def setView(self, view, **kwargs):
 
         self.app.display.open(

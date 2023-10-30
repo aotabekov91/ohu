@@ -8,6 +8,8 @@ from .element import Element
 
 class PdfModel(Base):
 
+    pattern='.*pdf$'
+
     def kind(self):
         return 'document'
 

@@ -17,6 +17,16 @@ fmt = ('.BMP',
 
 class ImageQtModel(Base):
 
+    f='|'.join([
+      'png', 
+      'bmp', 
+      'gif', 
+      'x[bp]m',
+      'p[bgp]m', 
+      'jp(e){0,1}g', 
+      ])
+    pattern=f'.*({f})$'
+
     def kind(self):
         return 'image'
 

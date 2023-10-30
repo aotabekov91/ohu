@@ -1,4 +1,3 @@
-import re
 from plug.qt.plugs.render import Render
 
 from .view import ImageQtView
@@ -7,20 +6,9 @@ from .model import ImageQtModel
 class ImageQt(Render):
 
     def initiate(self):
-        f='|'.join([
-          'png', 
-          'bmp', 
-          'gif', 
-          'x[bp]m',
-          'p[bgp]m', 
-          'jp(e){0,1}g', 
-          ])
+
         super().initiate(
-                f'.*({f})$',
-                ImageQtView, 
-                ImageQtModel,
-                )
-        print(self.pattern)
+                ImageQtView, ImageQtModel)
 
     def setView(self, view, **kwargs):
 

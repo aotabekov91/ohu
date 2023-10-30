@@ -10,12 +10,6 @@ class PdfPoppler(Render):
         super().initiate(
                 PdfView, PdfModel)
 
-    def isCompatible(self, source):
-        
-        if source:
-            s=source.lower()
-            return s.endswith('pdf')
-
     def setView(self, view, **kwargs):
 
         self.app.display.open(
