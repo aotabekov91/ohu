@@ -1,7 +1,7 @@
-from PyQt5 import QtCore, QtGui, QtMultimedia
-from gizmo.ui.view.model import Element as Base
+from PyQt5 import QtCore, QtMultimedia
+from gizmo.widget.model import BaseElement
 
-class Element(Base):
+class MediaQtElement(BaseElement):
 
     def size(self):
 
@@ -10,7 +10,6 @@ class Element(Base):
 
     def setup(self):
 
-        super().setup()
         self.m_url=QtCore.QUrl.fromLocalFile(
                 self.m_data)
     

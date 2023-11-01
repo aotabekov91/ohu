@@ -1,9 +1,13 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
-from gizmo.ui.view.item import Item as Base
+from gizmo.widget.view import RenderMixin, BaseItem 
 
 from .tile import Tile
 
-class Item(Base):
+class Item(
+        RenderMixin,
+        BaseItem,
+        QtWidgets.QGraphicsObject,
+        ):
 
     def setup(self):
 
@@ -13,12 +17,6 @@ class Item(Base):
             self.m_tileItems=[tile]
         self.redraw()
 
-    def setupPaint(self, p, opts, wids):
-
-        super().setupPaint(p, opts, wids)
-        self.paintSearch(p, opts, wids)
-        self.paintSelection(p, opts, wids)
-
     def paintItem(self, p, opts, wids):
 
         p.fillRect(
@@ -26,30 +24,6 @@ class Item(Base):
                 QtGui.QBrush(QtGui.QColor('white')))
         self.m_tileItems[0].paint(
                 p, self.m_brect.topLeft())
-
-    def paintSelection(self, p, opts, wids):
-
-        p.save()
-        s=self.m_view.selected() or []
-        for i in s:
-            if self==i['item']: 
-                b=i['box']
-                a=[self.mapToItem(b) for b in b]
-                b=QtGui.QBrush(self.select_bcolor)
-                p.setBrush(self.select_bcolor)
-                p.drawRects(a)
-                pen=QtGui.QPen(self.select_pcolor, 0.0)
-                p.setPen(pen)
-                p.drawRects(a)
-        p.restore()
-
-    def paintSearch(self, p, opts, wids):
-
-        if len(self.m_searched)>0:
-            p.save()
-            p.setPen(QtGui.QPen(QtCore.Qt.red, 0.0))
-            p.drawRects(self.m_searched)
-            p.restore()
 
     def select(
             self, 

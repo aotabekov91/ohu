@@ -1,1 +1,1 @@
-from .main import Item
+from .item import Item
