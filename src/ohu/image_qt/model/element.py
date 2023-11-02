@@ -1,7 +1,10 @@
 from PyQt5 import QtCore, QtGui
 from gizmo.widget.model import BaseElement
 
-class ImageQtElement(BaseElement):
+class ImageQtElement(
+        BaseElement,
+        QtCore.QObject
+        ):
 
     def size(self):
         
