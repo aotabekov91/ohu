@@ -5,7 +5,7 @@ from gizmo.widget.view import (
         ItemMixin, 
         BaseView)
 
-from .item import Item
+from .item import ImageQtItem
 
 class ImageQtView(
         DirMixin, 
@@ -14,8 +14,8 @@ class ImageQtView(
         BaseView,
         QtWidgets.QGraphicsView):
 
-    item_class=Item
     position='display'
+    item_class=ImageQtItem
 
     def initialize(self):
 

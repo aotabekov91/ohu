@@ -1,7 +1,7 @@
 from PyQt5 import QtWidgets
 from gizmo.widget.view import XYMixin, ItemMixin, BaseView
 
-from .item import Item
+from .item import DjvuItem
 
 class DjvuView(
         XYMixin,
@@ -10,7 +10,8 @@ class DjvuView(
         QtWidgets.QGraphicsView,
         ):
 
-    item_class=Item
+    position='display'
+    item_class=DjvuItem
 
     def initialize(self):
 

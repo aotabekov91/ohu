@@ -1,7 +1,7 @@
 from PyQt5 import QtCore, QtWidgets
 from gizmo.widget.view import ItemMixin, XYMixin, BaseView
 
-from .item import Item
+from .item import PdfFitzItem
 
 class PdfView(
         XYMixin,
@@ -10,12 +10,7 @@ class PdfView(
         QtWidgets.QGraphicsView,
         ):
 
-    item_class=Item
-
-    def initialize(self):
-
-        super().initialize()
-        self.fitToWindowWidth()
+    item_class=PdfFitzItem
 
     def prepareView(self, digit=1, x=0, y=0):
 
@@ -41,7 +36,6 @@ class PdfView(
             if j == digit:
                 hv = int(pos.left()+x*pos.width())
                 vv = int(pos.top()+y*pos.height())
-
         self.setSceneRect(l, t, w, h)
         self.horizontalScrollBar().setValue(hv)
         self.verticalScrollBar().setValue(vv)
