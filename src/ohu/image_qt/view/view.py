@@ -12,7 +12,8 @@ class ImageQtView(
         XYMixin, 
         ItemMixin,
         BaseView,
-        QtWidgets.QGraphicsView):
+        QtWidgets.QGraphicsView
+        ):
 
     position='display'
     item_class=ImageQtItem

@@ -29,7 +29,8 @@ class PdfModel(
             idx=shash.hexdigest()
             self.setId(idx)
 
-    def load(self, source):
+    def load(self):
 
-        self.m_data=fitz.open(source)
+        s=self.m_source
+        self.m_data=fitz.open(s)
         super().load()

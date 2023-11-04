@@ -23,6 +23,11 @@ class Element(
 
         fmt = QtGui.QImage.Format_RGB888
         x, y = int(hres/72.), int(vres/72.)
+        if rect:
+            s=rect.size()
+            ow=self.size()
+            x=s.width()/ow.width()
+            y=s.height()/ow.height()
         m=fitz.Matrix(x, y)
         p=self.m_data.get_pixmap(
                 matrix=m, alpha=False)
