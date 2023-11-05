@@ -2,19 +2,22 @@ import os
 import fitz
 import hashlib
 from PyQt5 import QtCore
-from gizmo.widget.model import ElementMixin, BaseModel
+from gizmo.vimo.model.base import Model
+from gizmo.vimo.model.mixin import Element
 
-from .element import Element
+from .mixin import Search
+from .element import FitzElement
 
 class PdfModel(
-        ElementMixin,
-        BaseModel,
+        Search,
+        Element,
+        Model,
         QtCore.QObject,
         ):
 
     kind='document'
     pattern='.*pdf$'
-    element_class=Element
+    element_class=FitzElement
 
     def assignId(self, source):
 

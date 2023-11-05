@@ -1,10 +1,10 @@
 from PyQt5 import QtWidgets
-from gizmo.widget.view import RenderMixin, TileMixin, BaseItem 
+from gizmo.vimo.item import Render, Zoom, Item 
 
 class PdfFitzItem(
-        TileMixin,
-        RenderMixin,
-        BaseItem,
+        Render,
+        Zoom,
+        Item,
         QtWidgets.QGraphicsObject,
         ):
     pass

@@ -1,11 +1,14 @@
 import fitz
 from PyQt5 import QtCore, QtGui
-from gizmo.widget.model import BaseElement
+from gizmo.vimo.element import Element
 
-class Element(
-        BaseElement, 
+class FitzElement(
+        Element, 
         QtCore.QObject
         ):
+
+    def search(self, text):
+        return self.m_data.search_for(text)
 
     def size(self): 
 
