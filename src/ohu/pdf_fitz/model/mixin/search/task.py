@@ -1,5 +1,16 @@
-class SearchTask(Base):
-    raise
+from gizmo.utils import Task
+
+class SearchTask(Task):
+
+    def setup(self):
+
+        super().setup()
+        self.m_model=self.kwargs.get('model')
+        self.m_model.searchFound
+
+    def start(self, text):
+
+        raise
 
     def run(self):
 
@@ -7,3 +18,4 @@ class SearchTask(Base):
             f=e.search(text)
             if f:
                 self.searchFound.emit(e, f)
+
