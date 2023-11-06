@@ -5,11 +5,9 @@ from PyQt5 import QtCore
 from gizmo.vimo.model.base import Model
 from gizmo.vimo.model.mixin import Element
 
-from .mixin import Search
-from .element import FitzElement
+from ..element import FitzElement
 
-class PdfModel(
-        Search,
+class FitzModel(
         Element,
         Model,
         QtCore.QObject,

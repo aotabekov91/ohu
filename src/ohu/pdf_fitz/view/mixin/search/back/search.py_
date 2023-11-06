@@ -1,0 +1,33 @@
+from PyQt5 import QtCore
+from .task import SearchTask
+
+class Search:
+
+    canSearch=True
+    searchFound=QtCore.pyqtSignal(
+            object, object)
+
+    def setup(self):
+
+        self.m_task = SearchTask(self)
+        self.m_task.finished.connect(
+            self.on_searchFinished)
+        self.m_task.taskReady.connect(
+            self.on_searchReady)
+        self.m_task.cancel(True)
+        self.m_task.wait()
+        super().setup()
+
+    def search(self, text):
+
+        if self.m_task.isRunning():
+            self.m_task.cancel(True)
+        self.m_task.start(text)
+
+    def on_searchReady(self, data):
+        pass
+        # print(data)
+
+    def on_searchFinished(self):
+        raise
+        pass

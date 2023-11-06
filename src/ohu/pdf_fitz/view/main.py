@@ -2,17 +2,16 @@ from PyQt5 import QtWidgets
 from gizmo.vimo.view.base import View
 from gizmo.vimo.view.mixin import PoolItems, XYPos, Zoom, Fit, MoveScene
 
-from .mixin import Search
-from .item import PdfFitzItem
+from ..item import FitzItem
+from .mixin import Search, Select
 
-class PdfView(
-        Fit, Zoom, XYPos, Search, 
-        PoolItems, MoveScene,
-        View,
+class FitzView(
+        Fit, Zoom, XYPos, Search, Select,
+        PoolItems, MoveScene, View,
         QtWidgets.QGraphicsView,
         ):
 
-    item_class=PdfFitzItem
+    item_class=FitzItem
 
     def redrawView(self, digit=1, x=0, y=0):
 

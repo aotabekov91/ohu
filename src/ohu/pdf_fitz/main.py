@@ -1,9 +1,9 @@
 from plug.qt.plugs.render import DisplayRender
 
-from .view import PdfView
-from .model import PdfModel
+from .view import FitzView
+from .model import FitzModel
 
 class PdfFitz(DisplayRender):
 
-    view_class=PdfView
-    model_class=PdfModel
+    view_class=FitzView
+    model_class=FitzModel

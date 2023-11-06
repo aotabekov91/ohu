@@ -1,1 +1,1 @@
-from .model import PdfModel
+from .main import FitzModel

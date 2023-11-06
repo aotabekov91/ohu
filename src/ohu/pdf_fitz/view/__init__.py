@@ -1,1 +1,1 @@
-from .view import PdfView 
+from .main import FitzView
