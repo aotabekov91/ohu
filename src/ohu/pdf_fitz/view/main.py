@@ -1,9 +1,9 @@
 from PyQt5 import QtWidgets
 from gizmo.vimo.view.base import View
-from gizmo.vimo.view.mixin import PoolItems, XYPos, Zoom, Fit, MoveScene, Highlight, Select
+from gizmo.vimo.view.mixin import PoolItems, Zoom, Fit, MoveScene, Highlight, Select
 
 from ..item import FitzItem
-from .mixin import Search, Outline, Hint, Links
+from .mixin import Search, Outline, Hint, Links, XYPos
 
 class FitzView(
         Fit, 

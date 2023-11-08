@@ -33,5 +33,6 @@ class FitzModel(
     def load(self):
 
         s=self.m_source
+        self.assignId(s)
         self.m_data=fitz.open(s)
         super().load()
