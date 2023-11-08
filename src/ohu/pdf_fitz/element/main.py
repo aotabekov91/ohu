@@ -2,10 +2,12 @@ import fitz
 from PyQt5 import QtCore, QtGui
 from gizmo.vimo.element import Element
 
-from .mixin import Search
+from .mixin import Search, Block, Links
 
 class FitzElement(
         Search,
+        Block,
+        Links,
         Element, 
         QtCore.QObject):
 

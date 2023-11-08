@@ -1,1 +1,1 @@
-from .select import Select
+from .links import Links

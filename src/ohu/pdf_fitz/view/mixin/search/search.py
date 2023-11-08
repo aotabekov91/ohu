@@ -12,7 +12,7 @@ class Search:
         self.pool=QtCore.QThreadPool()
         self.m_task = SearchTask(self)
         self.m_task.signals.ready.connect(
-            self.on_searchReady)
+            self.searchFound)
         self.m_task.signals.finished.connect(
             self.on_searchFinished)
 
@@ -20,9 +20,6 @@ class Search:
 
         self.m_task.m_text=text
         self.pool.start(self.m_task)
-
-    def on_searchReady(self, data):
-        self.searchFound.emit(data)
 
     def on_searchFinished(self):
         self.m_task.wait=False
