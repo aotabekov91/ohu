@@ -18,10 +18,15 @@ class Locate(mixin.Locate):
     def getPositionLocator(self, data=None):
 
         i, x, y = self.getPosition()
-        i = str(i)[:3]
-        x = str(x)[:3]
-        y = str(y)[:3]
+        i = str(i)[:10]
+        x = str(x)[:10]
+        y = str(y)[:10]
         return {'position': ':'.join([i, x, y])}
+
+    def setPositionLocator(self, data=None):
+
+        i, x, y = self.openPositionLocator(data)
+        self.setCurrentIndex(i)
 
     def parsePositionLocator(self, data=None):
 

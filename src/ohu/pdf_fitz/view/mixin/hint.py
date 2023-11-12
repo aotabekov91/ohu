@@ -10,12 +10,14 @@ class Hint:
     def setup(self):
 
         self.m_hint_cache={}
+        self.m_hinting=False
         self.m_hinting_items=[]
         self.clearHint()
         super().setup()
 
     def hint(self, alist=None):
 
+        self.m_hinting=True
         vis=self.visibleItems()
         self.m_hinting_items=vis
         if alist is None:
@@ -29,11 +31,6 @@ class Hint:
         else:
             self.hintFinished.emit()
             self.cleanUpHinting()
-
-    def updateHintItems(self):
-
-        for i in self.m_hinting_items:
-            i.update()
 
     def connectHint(self):
 
@@ -60,7 +57,8 @@ class Hint:
             self.cleanUpHinting()
         else:
             hints={}
-            for k, (i, d) in match.items():
+            for k, d in match.items():
+                i=d['item']
                 if not i  in hints:
                     hints[i]={}
                 hints[i][k]=d
@@ -68,8 +66,14 @@ class Hint:
             self.m_hint_remap=match
             self.updateHintItems()
 
+    def updateHintItems(self):
+
+        for i in self.m_hinting_items:
+            i.update()
+
     def cleanUpHinting(self):
 
+        self.m_hinting=False
         self.disconnectHint()
         self.clearHint()
 
@@ -132,13 +136,14 @@ class Hint:
 
     def paintHints(self, p, o, w, i):
 
-        p.save()
-        pen=QtGui.QPen(QtCore.Qt.red, 0.0)
-        p.setPen(pen)
-        m=self.m_hint_map.get(i, {})
-        for j, d in m.items():
-            b=d['box']
-            if type(b)==list: b=b[0]
-            tr=i.mapToItem(b, unified=True)
-            p.drawText(tr.topLeft(), j)
-        p.restore()
+        if self.m_hinting:
+            p.save()
+            pen=QtGui.QPen(QtCore.Qt.red, 0.0)
+            p.setPen(pen)
+            m=self.m_hint_map.get(i, {})
+            for j, d in m.items():
+                b=d['box']
+                if type(b)==list: b=b[0]
+                tr=i.mapToItem(b, unified=True)
+                p.drawText(tr.topLeft(), j)
+            p.restore()

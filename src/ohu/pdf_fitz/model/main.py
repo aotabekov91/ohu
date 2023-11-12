@@ -6,8 +6,11 @@ from gizmo.vimo.model.base import Model
 from gizmo.vimo.model.mixin import Element
 
 from ..element import FitzElement
+from .mixin import AnnotateLocate, Locate
 
 class FitzModel(
+        AnnotateLocate,
+        Locate,
         Element,
         Model,
         QtCore.QObject,
@@ -16,6 +19,13 @@ class FitzModel(
     kind='document'
     pattern='.*pdf$'
     element_class=FitzElement
+
+    canAnnotate=True
+
+    def setup(self):
+
+        super().setup()
+        self.assignId(self.m_source)
 
     def assignId(self, source):
 
@@ -33,6 +43,5 @@ class FitzModel(
     def load(self):
 
         s=self.m_source
-        self.assignId(s)
         self.m_data=fitz.open(s)
         super().load()

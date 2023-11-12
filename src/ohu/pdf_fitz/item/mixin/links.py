@@ -1,4 +1,3 @@
-
 class Links:
 
     hasLinks=True

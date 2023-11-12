@@ -4,20 +4,6 @@ class Block:
 
     canBlock=True
 
-    def setup(self):
-
-        super().setup()
-        self.setTrans()
-
-    def setTrans(self):
-
-        s=self.size()
-        n= QtGui.QTransform()
-        n.scale(s.width(), s.height())
-        ninv=n.inverted()[0]
-        self.m_norm=n
-        self.m_norm_inv=ninv
-
     def updateBlock(self, kind, sel):
 
         b=sel['box']
@@ -133,10 +119,8 @@ class Block:
 
         cb=csel['box']
         jb=jsel['box']
-
         ctl=cb[0].topLeft()
         cbr=cb[-1].bottomRight()
-
         jtl=jb[0].topLeft()
         jbr=jb[-1].bottomRight()
 
