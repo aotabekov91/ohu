@@ -7,19 +7,18 @@ authors = ["A O <adhambek.otabekov.post@gmail.com>"]
 
 [tool.poetry.dependencies]
 python = "^3.9"
+pymupdf = {version="==1.23.5", optional=true}
+xmltodict = {version=">=0.13.0", optional=true}
+python-poppler-qt5 = {version="==21.3.0", optional=true} # Causes pep517 error
 gizmo = {path = "/home/adam/code/gizmo", develop = true}
 plug = {path = "/home/adam/code/plug", extras=["qt"], develop = true}
-
-pymupdf = {version="^1.23.5", optional=true}
-xmltodict = {version=">=0.13.0", optional=true}
 python-djvulibre = {git="https://github.com/aotabekov91/python-djvulibre", optional=true}
-# python-poppler-qt5 = {version="==21.3.0", optional=true} # Causes pep517 error
 
 [tool.poetry.extras]
 fitz=["pymupdf"]
-djvu=["python-djvulibre"]
 epub=["xmltodict"]
-# poppler=["python-poppler-qt5"]
+djvu=["python-djvulibre"]
+poppler=["python-poppler-qt5"]
 all=["pymupdf", "python-djvulibre", "xmltodict"]
 
 [build-system]
