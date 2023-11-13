@@ -10,14 +10,23 @@ class FitzElement(
         Links,
         Element, 
         Annotate,
-        QtCore.QObject
-        ):
+        QtCore.QObject):
 
-    def size(self): 
+    def setup(self):
+
+        super().setup()
+        self.setSize()
+        self.matrix=fitz.Matrix(1, 1)
+        self.fmt = QtGui.QImage.Format_RGB888
+
+    def setSize(self):
 
         b=self.m_data.bound()
         w, h = b.width, b.height
-        return QtCore.QSizeF(w, h)
+        self.m_size=QtCore.QSizeF(w, h)
+
+    def size(self): 
+        return self.m_size
 
     def render(
             self, 
@@ -27,14 +36,14 @@ class FitzElement(
             rect=None
             ):
 
-        fmt = QtGui.QImage.Format_RGB888
-        x, y = int(hres/72.), int(vres/72.)
+        m=self.matrix
+        # x, y = int(hres/72.), int(vres/72.)
         if rect:
-            s=rect.size()
-            ow=self.size()
-            x=s.width()/ow.width()
-            y=s.height()/ow.height()
-        m=fitz.Matrix(x, y)
+            rs=rect.size()
+            os=self.size()
+            x=rs.width()/os.width()
+            y=rs.height()/os.height()
+            m=fitz.Matrix(x, y)
         p=self.m_data.get_pixmap(
                 matrix=m, alpha=False)
         return QtGui.QImage(
@@ -42,4 +51,4 @@ class FitzElement(
             p.width,
             p.height,
             p.stride,
-            fmt)
+            self.fmt)
