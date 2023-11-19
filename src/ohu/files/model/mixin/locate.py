@@ -6,4 +6,5 @@ class Locate(mixin.Locate):
 
         f=self.findLocator('getUniq', kind)
         if f: return f(data)
-        return {'hash': self.id(), 'kind': self.kind}
+        data={'hash': self.id(), 'kind': self.kind}
+        return self.createLocator(data)

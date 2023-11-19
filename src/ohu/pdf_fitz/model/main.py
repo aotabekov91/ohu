@@ -2,7 +2,7 @@ import os
 import fitz
 import hashlib
 from PyQt5 import QtCore
-from gizmo.vimo.model.base import Model
+from gizmo.vimo.model import Model
 from gizmo.vimo.model.mixin import Element
 
 from ..element import FitzElement
@@ -17,10 +17,8 @@ class FitzModel(
         ):
 
     kind='document'
-    pattern='.*pdf$'
-    element_class=FitzElement
-
     canAnnotate=True
+    element_class=FitzElement
 
     def setup(self):
 

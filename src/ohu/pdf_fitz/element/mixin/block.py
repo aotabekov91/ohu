@@ -124,7 +124,6 @@ class Block:
         jtl=jb[0].topLeft()
         jbr=jb[-1].bottomRight()
 
-        print(ctl, jbr)
         if abs(ctl.y()-jbr.y())<0.1:
             if jtl.x()<ctl.x():
                 cb[0].setTopLeft(jtl)

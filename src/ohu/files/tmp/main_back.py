@@ -1,5 +1,5 @@
 import os
-from gizmo.utils import register
+from gizmo.utils import tag
 from gizmo.widget import TreeWidget
 from plug.qt.plugs.viewer import Viewer
 from PyQt5.QtWidgets import QFileSystemModel
@@ -95,7 +95,7 @@ class FileBrowserView(Viewer):
         if fullscreen:
             self.ui.dock.toggleFullscreen()
 
-    @register(modes=['run'])
+    @tag(modes=['run'])
     def openLocalFile(
             self, 
             path, 
@@ -104,7 +104,7 @@ class FileBrowserView(Viewer):
             ):
         self.openFile(path, how, focus)
 
-    @register('o')
+    @tag('o')
     def openFile(
             self, 
             path=None, 

@@ -21,7 +21,8 @@ class Locate(mixin.Locate):
         i = str(i)[:10]
         x = str(x)[:10]
         y = str(y)[:10]
-        return {'position': ':'.join([i, x, y])}
+        data={'position': ':'.join([i, x, y])}
+        return self.createLocator(data)
 
     def setPositionLocator(self, data=None):
 

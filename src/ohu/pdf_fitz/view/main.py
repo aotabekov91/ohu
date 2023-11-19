@@ -1,24 +1,24 @@
 from PyQt5 import QtWidgets
-from gizmo.vimo.view.base import View
-from gizmo.vimo.view.mixin import PoolItems, Zoom, MoveScene, Highlight, Select, XYPos, Copy
+from gizmo.vimo import view
 
+from . import mixin
 from ..item import FitzItem
-from .mixin import Search, Outline, Hint, Links, Locate
 
 class FitzView(
-        Zoom, 
-        Hint,
-        Copy,
-        XYPos, 
-        Links,
-        Search, 
-        Locate,
-        Select,
-        Outline,
-        Highlight,
-        PoolItems, 
-        MoveScene, 
-        View,
+        mixin.Go,
+        mixin.Hint,
+        mixin.Links,
+        mixin.Search, 
+        mixin.Locate,
+        mixin.Outline,
+        view.mixin.Copy,
+        view.mixin.Scale, 
+        view.mixin.XYPos, 
+        view.mixin.Select,
+        view.mixin.PoolItems, 
+        view.mixin.MoveScene, 
+        view.mixin.ItemsHighlight,
+        view.View,
         QtWidgets.QGraphicsView,
         ):
 

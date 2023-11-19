@@ -114,7 +114,7 @@ class PdfView(View):
             t=[]
             for s in selected: 
                 t+=[s['text']]
-            clip=self.app.uiman.qapp.clipboard()
+            clip=self.app.qapp.clipboard()
             clip.setText(' '.join(t))
             self.select()
             self.refresh()

@@ -9,8 +9,8 @@ class AnnotateLocate:
             aid=data.get('id', None)
             elem=self.getAnnElement(data)
             elem.deannotate(data)
-            return {'id': aid}
-        return {}
+            return self.createLocator({'id': aid})
+        return self.createLocator()
 
     def getAnnotationLocator(self, data=None):
 
@@ -20,7 +20,7 @@ class AnnotateLocate:
             data['page']=self.getAnnPage(data)
             data['position']=self.getAnnLocation(data)
             data['content']=self.getAnnContent(data)
-        return data
+        return self.createLocator(data)
 
     def setAnnotationLocator(self, data=None):
 
@@ -28,7 +28,7 @@ class AnnotateLocate:
             data['box']=self.getAnnBox(data)
             elem=self.getAnnElement(data)
             elem.annotate(data)
-        return data
+        return self.createLocator(data)
 
     def openAnnotationLocator(self, data=None):
 
