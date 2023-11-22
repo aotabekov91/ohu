@@ -16,7 +16,7 @@ class AnnotateLocate:
 
         if data:
             data['hash']=self.id()
-            data['kind']=self.kind
+            data['kind']=self.kind()
             data['page']=self.getAnnPage(data)
             data['position']=self.getAnnLocation(data)
             data['content']=self.getAnnContent(data)

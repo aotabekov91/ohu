@@ -8,13 +8,13 @@ from .model import FileBrowserModel
 class FileBrowser(Render):
 
     unique=True
-    keywords=['files']
-    position='dock_left'
     view_class=FileBrowserView
     model_class=FileBrowserModel
+    position={'ui': 'dock_left'}
     leader_keys={
         'command': 'f', 
-        'FileBrowser': '<c-.>'}
+        'FileBrowser': '<c-.>'
+        }
 
     def isCompatible(self, s):
         return s and os.path.isdir(s)
@@ -22,18 +22,19 @@ class FileBrowser(Render):
     def activate(self):
 
         m=self.app.moder
-        self.setView(self.view)
-        m.typeWanted.emit(self.view)
+        self.setView(self.m_view)
+        m.typeWanted.emit(self.m_view)
 
     def setup(self):
 
         super().setup()
-        self.model=self.getModel('/')
-        self.view=self.getView(self.model)
+        self.m_model=self.getModel('/')
+        self.m_view=self.getView(
+                self.m_model)
 
     def open(self, source, **kwargs):
 
-        self.view.setSource(source)
+        self.m_view.setSource(source)
         self.activate()
 
     @tag(modes=['run'])
@@ -44,4 +45,5 @@ class FileBrowser(Render):
             focus=True
             ):
 
-        self.view.openFile(path, how, focus)
+        self.m_view.openFile(
+                path, how, focus)

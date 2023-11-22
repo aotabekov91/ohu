@@ -16,7 +16,6 @@ class FitzModel(
         QtCore.QObject,
         ):
 
-    kind='document'
     canAnnotate=True
     element_class=FitzElement
 

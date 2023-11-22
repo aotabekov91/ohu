@@ -6,7 +6,8 @@ from .model import FitzModel
 class PdfFitz(Render):
 
     unique=False
+    kind='document'
     pattern='.*pdf$'
-    position='display'
     view_class=FitzView
     model_class=FitzModel
+    position={'FitzView': 'display'}

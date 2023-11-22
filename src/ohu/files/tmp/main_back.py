@@ -22,7 +22,7 @@ class FileBrowserView(Viewer):
                 keywords=keywords,
                 leader_keys=leader_keys,
                 **kwargs)
-        self.setUI()
+        self.setupUI()
         self.connect()
 
     def connect(self):
@@ -37,10 +37,10 @@ class FileBrowserView(Viewer):
             rplug.setArgOptions(
                 'openFile', 'path', 'path')
 
-    def setUI(self):
+    def setupUI(self):
 
         tree=TreeWidget()
-        self.uiman.setUI(tree)
+        self.uiman.setupUI(tree)
         self.setModel()
 
     def getPath(self, index=None):
