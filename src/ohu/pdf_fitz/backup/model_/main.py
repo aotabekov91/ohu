@@ -16,10 +16,7 @@ class FitzModel(
         QtCore.QObject,
         ):
 
-    kind='document'
-    pattern='.*pdf$'
     canAnnotate=True
-    wantView=['FitzView']
     element_class=FitzElement
 
     def setup(self):

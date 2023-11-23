@@ -1,13 +1,14 @@
-from plug.qt.plugs.render import Render
+from plug.qt.plug import Plug
 
 from .view import FitzView
 from .model import FitzModel
 
-class PdfFitz(Render):
+class PdfFitz(Plug):
 
-    unique=False
-    kind='document'
-    pattern='.*pdf$'
-    view_class=FitzView
-    model_class=FitzModel
-    position={'FitzView': 'display'}
+    def setup(self):
+
+        super().setup()
+        self.app.handler.addView(
+                FitzView)
+        self.app.handler.addModel(
+                FitzModel)

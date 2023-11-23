@@ -1,3 +1,4 @@
+import os
 from plug import Plug
 from gizmo.vimo import view
 
@@ -9,6 +10,9 @@ class FileBrowserView(
         view.mixin.TreeMove,
         view.TreeView
         ):
+
+    isUnique=True
+    pos='dock_left'
 
     def setModel(self, model):
 

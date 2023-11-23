@@ -22,7 +22,5 @@ class FitzView(
         QtWidgets.QGraphicsView,
         ):
 
-    isUnique=False
     canAnnotate=True
     item_class=FitzItem
-    position={'FitzView': 'display'}
