@@ -8,7 +8,7 @@ class PdfFitz(Plug):
     def setup(self):
 
         super().setup()
-        self.app.handler.addView(
+        self.app.handler.addViewer(
                 FitzView)
-        self.app.handler.addModel(
+        self.app.handler.addModeller(
                 FitzModel)

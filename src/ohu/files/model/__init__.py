@@ -1,1 +1,1 @@
-from .main import FileBrowserModel
+from .main import FilesModel

@@ -1,49 +1,41 @@
-import os
-from gizmo.utils import tag
-from plug.qt.plugs.render import Render
+from plug.qt import Plug
 
-from .view import FileBrowserView
-from .model import FileBrowserModel
+from .view import FilesView
+from .model import FilesModel
 
-class FileBrowser(Render):
-
-    unique=True
-    view_class=FileBrowserView
-    model_class=FileBrowserModel
-    position={'ui': 'dock_left'}
-    leader_keys={
-        'command': 'f', 
-        'FileBrowser': '<c-.>'
-        }
-
-    def isCompatible(self, s):
-        return s and os.path.isdir(s)
-
-    def activate(self):
-
-        m=self.app.moder
-        self.setView(self.m_view)
-        m.typeWanted.emit(self.m_view)
+class FileBrowser(Plug):
 
     def setup(self):
 
         super().setup()
-        self.m_model=self.getModel('/')
-        self.m_view=self.getView(
-                self.m_model)
+        self.app.handler.addViewer(
+                FilesView)
+        self.app.handler.addModeller(
+                FilesModel)
+        self.app.handler.handleInitiate('/')
 
-    def open(self, source, **kwargs):
+    # @tag('t', modes=['command']) 
+    # def activate(self):
+    #     m=self.app.moder
+    #     self.setView(self.m_view)
+    #     m.typeWanted.emit(self.m_view)
 
-        self.m_view.setSource(source)
-        self.activate()
+    # def setup(self):
+    #     super().setup()
+    #     self.m_model=self.getModel('/')
+    #     self.m_view=self.getView(
+    #             self.m_model)
 
-    @tag(modes=['run'])
-    def openLocalFile(
-            self, 
-            path, 
-            how=None, 
-            focus=True
-            ):
+    # def open(self, source, **kwargs):
+    #     self.m_view.setSource(source)
+    #     self.activate()
 
-        self.m_view.openFile(
-                path, how, focus)
+    # @tag(modes=['run'])
+    # def openLocalFile(
+    #         self, 
+    #         path, 
+    #         how=None, 
+    #         focus=True
+    #         ):
+    #     self.m_view.openFile(
+    #             path, how, focus)

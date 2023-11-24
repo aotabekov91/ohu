@@ -9,7 +9,7 @@ class FileBrowserView(Viewer):
     def __init__(
             self, 
             position='dock_left',
-            leader_keys={
+            prefix_keys={
                 'command': 'f', 
                 'FileBrowser': '<c-.>'
                 }, 
@@ -20,7 +20,7 @@ class FileBrowserView(Viewer):
         super().__init__(
                 position=position,
                 keywords=keywords,
-                leader_keys=leader_keys,
+                prefix_keys=prefix_keys,
                 **kwargs)
         self.setupUI()
         self.connect()

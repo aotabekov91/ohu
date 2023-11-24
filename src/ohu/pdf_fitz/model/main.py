@@ -16,6 +16,7 @@ class FitzModel(
         QtCore.QObject,
         ):
 
+    isType=True
     kind='document'
     pattern='.*pdf$'
     canAnnotate=True

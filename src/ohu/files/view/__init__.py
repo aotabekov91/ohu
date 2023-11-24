@@ -1,1 +1,1 @@
-from .main import FileBrowserView
+from .main import FilesView

@@ -1,18 +1,28 @@
-import os
-from plug import Plug
 from gizmo.vimo import view
+from gizmo.utils import tag
 
 from .mixin import Locate
 
-class FileBrowserView(
+class FilesView(
         Locate,
         view.mixin.TreeGo,
         view.mixin.TreeMove,
         view.TreeView
         ):
 
-    isUnique=True
-    pos='dock_left'
+    prefix_keys={
+        'command': 'f', 
+        '|FilesView': '<c-.>'}
+    position={'FilesView': 'dock_left'}
+
+    @tag('t', modes=['command'])
+    def toggle(self):
+        print('here', self)
+        super().toggle()
+
+    @tag('o', modes=['normal|FilesView'])
+    def open(self):
+        raise
 
     def setModel(self, model):
 
