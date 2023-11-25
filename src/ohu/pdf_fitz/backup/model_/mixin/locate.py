@@ -11,6 +11,6 @@ class Locate(mixin.Locate):
         if f: return f(data)
         data={
              'hash':self.id(), 
-             'kind':self.kind(),
+             'kind':self.kind,
              }
         return self.createLocator(data)

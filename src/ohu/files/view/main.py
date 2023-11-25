@@ -17,7 +17,6 @@ class FilesView(
 
     @tag('t', modes=['command'])
     def toggle(self):
-        print('here', self)
         super().toggle()
 
     @tag('o', modes=['normal|FilesView'])
