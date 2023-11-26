@@ -2,7 +2,7 @@ from gizmo.vimo.view import mixin
 
 class Locate(mixin.Locate):
 
-    def openPositionLocator(self, data):
+    def openPositionLocator(self, data={}):
 
         x, y = 0, 0
         i=data.get('page', 1)
@@ -15,16 +15,16 @@ class Locate(mixin.Locate):
         self.goto(i, x, y)
         return i, x, y
 
-    def getPositionLocator(self, data=None):
+    def getPositionLocator(self, data={}):
 
         i, x, y = self.getPosition()
         i = str(i)[:10]
         x = str(x)[:10]
         y = str(y)[:10]
-        data={'position': ':'.join([i, x, y])}
+        data['position'] = ':'.join([i, x, y])
         return self.createLocator(data)
 
-    def setPositionLocator(self, data=None):
+    def setPositionLocator(self, data={}):
 
         i, x, y = self.openPositionLocator(data)
         self.setCurrentIndex(i)
