@@ -14,9 +14,9 @@ class FilesModel(
     wantView=['FilesView']
 
     @classmethod
-    def isCompatible(cls, source):
-        return source and os.path.isdir(source)
+    def isCompatible(cls, s, **kwargs):
+        return s and os.path.isdir(s)
 
     @classmethod
-    def getSourceName(cls, source):
+    def getSourceName(cls, s, **kwargs):
         return '/'

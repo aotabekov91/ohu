@@ -10,7 +10,6 @@ class FitzView(
         mixin.Links,
         mixin.Search, 
         mixin.Locate,
-        mixin.Outline,
         view.mixin.Copy,
         view.mixin.Scale, 
         view.mixin.XYPos, 

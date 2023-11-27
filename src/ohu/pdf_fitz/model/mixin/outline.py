@@ -1,5 +1,11 @@
 import fitz
 from PyQt5 import QtCore, QtGui
+from gizmo.vimo.model import SModel 
+
+class OutlineModel(SModel):
+
+    wantUniqView=True
+    wantView=['OutlineView']
 
 class Outline:
 
@@ -8,20 +14,15 @@ class Outline:
     def setup(self):
 
         super().setup()
-        self.m_outline=QtGui.QStandardItemModel()
+        self.m_outline=OutlineModel()
+        self.loaded.connect(self.setOutline)
 
     def getOutline(self):
         return self.m_outline
 
-    def setModel(self, model):
-
-        super().setModel(model)
-        model.loaded.connect(
-                self.setOutline)
-
     def setOutline(self):
 
-        o=self.m_model.m_data.outline
+        o=self.m_data.outline
         r=self.m_outline.invisibleRootItem()
         self.loadOutline(o, r)
 
@@ -49,19 +50,3 @@ class Outline:
             self.loadOutline(o.next, p)
         if o.down != 0:
             self.loadOutline(o.down, i)
-
-    def openOutlineItem(self, oitem):
-
-        p=oitem.data()
-        self.goto(p)
-
-    def findInOutline(self, vitem):
-
-        if vitem:
-            m=self.m_outline
-            idx=vitem.element().index()
-            goto=0
-            for r in range(m.rowCount()):
-                if idx<m.item(r).data():
-                    return m.index(goto, 0)
-                goto=r

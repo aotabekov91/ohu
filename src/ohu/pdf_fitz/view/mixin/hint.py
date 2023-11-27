@@ -1,4 +1,3 @@
-from math import ceil
 from PyQt5 import QtCore, QtGui
 
 class Hint:
@@ -15,7 +14,7 @@ class Hint:
         self.clearHint()
         super().setup()
 
-    def hint(self, alist=None):
+    def hint(self, alist=None, kind=None):
 
         self.m_hinting=True
         vis=self.visibleItems()
@@ -51,10 +50,12 @@ class Hint:
         if len(match)==0:
             self.hintFinished.emit()
             self.cleanUpHinting()
+            self.disconnectHint()
         elif len(match)==1:
             d=match[list(match.keys())[0]]
             self.hintSelected.emit(d)
             self.cleanUpHinting()
+            self.disconnectHint()
         else:
             hints={}
             for k, d in match.items():
@@ -74,7 +75,6 @@ class Hint:
     def cleanUpHinting(self):
 
         self.m_hinting=False
-        self.disconnectHint()
         self.clearHint()
 
     def clearHint(self):

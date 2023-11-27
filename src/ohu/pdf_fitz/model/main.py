@@ -5,12 +5,13 @@ from PyQt5 import QtCore
 from gizmo.vimo.model import Model
 from gizmo.vimo.model.mixin import Element
 
+from . import mixin
 from ..element import FitzElement
-from .mixin import AnnotateLocate, Locate
 
 class FitzModel(
-        AnnotateLocate,
-        Locate,
+        mixin.AnnotateLocate,
+        mixin.Locate,
+        mixin.Outline,
         Element,
         Model,
         QtCore.QObject,

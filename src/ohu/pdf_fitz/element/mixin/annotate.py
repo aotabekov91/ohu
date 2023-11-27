@@ -15,7 +15,7 @@ class Annotate(mixin.Annotate):
             if r.intersects(b):
                 self.m_data.delete_annot(a)
                 self.annotationRemoved.emit(d)
-                self.changed.emit()
+                self.dataChanged.emit()
                 return a
 
     def annotate(self, d):
@@ -31,7 +31,7 @@ class Annotate(mixin.Annotate):
             a.set_colors(stroke=s)
         a.update()
         self.annotationAdded.emit(d)
-        self.changed.emit()
+        self.dataChanged.emit()
 
     def getAnnQuads(self, d):
 
