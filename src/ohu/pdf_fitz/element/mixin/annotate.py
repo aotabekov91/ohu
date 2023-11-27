@@ -36,9 +36,9 @@ class Annotate(mixin.Annotate):
     def getAnnQuads(self, d):
 
         q=[]
-        r=d.get('box')
-        if type(r)!=list: r=[r]
-        for i in r:
+        b=d.get('box')
+        if type(b)!=list: b=[b]
+        for i in b:
             i=self.m_norm.mapRect(i)
             x, y = i.x(), i.y()
             w, h = i.width(), i.height()
