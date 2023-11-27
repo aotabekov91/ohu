@@ -40,5 +40,6 @@ class SearchTask(QtCore.QRunnable):
                 x, y = f.x0, f.y0
                 w, h = f.width, f.height 
                 p=(x, y, w, h)
-                data+=[(i, i.mapToItem(p))]
+                pe=i.mapToElement(p, unify=True)
+                data+=[(i, pe)]
             self.signals.ready.emit(data)
