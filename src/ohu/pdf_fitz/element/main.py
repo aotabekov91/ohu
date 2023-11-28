@@ -37,7 +37,6 @@ class FitzElement(
             ):
 
         m=self.matrix
-        # x, y = int(hres/72.), int(vres/72.)
         if rect:
             rs=rect.size()
             os=self.size()

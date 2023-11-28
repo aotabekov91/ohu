@@ -44,6 +44,8 @@ class FitzModel(
 
     def load(self):
 
-        s=self.m_source
-        self.m_data=fitz.open(s)
+        if not self.isLoaded:
+            s=self.m_source
+            self.m_data=fitz.open(s)
+            self.isLoaded=True
         super().load()

@@ -6,6 +6,7 @@ from ..item import FitzItem
 
 class FitzView(
         mixin.Go,
+        mixin.Yank,
         mixin.Hint,
         mixin.Links,
         mixin.Search, 
