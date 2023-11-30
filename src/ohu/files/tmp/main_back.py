@@ -95,7 +95,7 @@ class FileBrowserView(Viewer):
         if fullscreen:
             self.ui.dock.toggleFullscreen()
 
-    @tag(modes=['run'])
+    @tag(modes=['exec'])
     def openLocalFile(
             self, 
             path, 

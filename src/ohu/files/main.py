@@ -1,4 +1,5 @@
 from plug.qt import Plug
+from gizmo.utils import tag
 
 from .view import FilesView
 from .model import FilesModel
@@ -30,12 +31,12 @@ class FileBrowser(Plug):
     #     self.m_view.setSource(source)
     #     self.activate()
 
-    # @tag(modes=['run'])
-    # def openLocalFile(
-    #         self, 
-    #         path, 
-    #         how=None, 
-    #         focus=True
-    #         ):
-    #     self.m_view.openFile(
-    #             path, how, focus)
+    @tag(modes=['exec'])
+    def openLocalFile(
+            self, 
+            path, 
+            how=None, 
+            focus=True
+            ):
+        self.m_view.openFile(
+                path, how, focus)

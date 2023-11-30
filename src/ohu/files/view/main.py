@@ -23,6 +23,10 @@ class FilesView(
     def open(self):
         raise
 
+    @tag(modes=['exec'])
+    def openFile(self):
+        raise
+
     def setModel(self, model):
 
         if model:
