@@ -21,7 +21,7 @@ class Links:
             item=self.item(p+1)
             elem=item.element()
             tl=elem.m_norm_inv.map(tl)
-            self.goto(p+1, tl.x(), tl.y())
+            self.goTo(p+1, tl.x(), tl.y())
         elif d.kind==fitz.LINK_URI:
             cmd=['qutebrowser', d.uri]
             subprocess.Popen(cmd)

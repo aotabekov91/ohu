@@ -127,11 +127,11 @@ class PdfView(View):
             loc=self.getLocation(pos)
             if type(loc)==tuple:
                 x, y = loc
-                self.goto(p, x, y)
+                self.goTo(p, x, y)
             elif type(loc)==list:
                 topLeft=loc[0].topLeft() 
                 x, y = topLeft.x(), topLeft.y()
-                self.goto(p, x, y)
+                self.goTo(p, x, y)
 
     def getLocation(self, loc=None):
 

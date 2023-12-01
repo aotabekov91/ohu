@@ -6,7 +6,7 @@ class Locate(mixin.Locate):
 
         p=data.get('position', None)
         i, x, y = self.parsePositionLocator(p)
-        self.goto(i, x, y)
+        self.goTo(i, x, y)
         return i, x, y
 
     def getPositionLocator(self, data={}, **kwargs):

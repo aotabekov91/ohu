@@ -1,4 +1,3 @@
-from .go import Go
 from .yank import Yank
 from .hint import Hint
 from .links import Links

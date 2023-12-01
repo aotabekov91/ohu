@@ -2,6 +2,8 @@ from gizmo.vimo.view import mixin
 
 class AnnotateLocate(mixin.Locate):
 
+    canAnnotate=True
+
     def openAnnotationLocator(self, data={}, **kwargs):
 
         b=data.get('box', None)

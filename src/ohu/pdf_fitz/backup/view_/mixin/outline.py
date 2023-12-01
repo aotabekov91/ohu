@@ -53,7 +53,7 @@ class Outline:
     def openOutlineItem(self, oitem):
 
         p=oitem.data()
-        self.goto(p)
+        self.goTo(p)
 
     def findInOutline(self, vitem):
 
