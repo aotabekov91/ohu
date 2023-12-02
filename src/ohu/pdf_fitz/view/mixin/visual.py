@@ -4,17 +4,6 @@ class Visual:
 
     hasBlocks=True
 
-    def getSelection(self):
-
-        v=self.app.handler.view()
-        if v: return v.selection()
-
-    def startHint(self):
-        pass
-
-    def finishHint(self):
-        pass
-
     def selectHint(
             self, sel, submode=None):
 
@@ -26,10 +15,11 @@ class Visual:
 
     def jump(self, sel):
 
+        s=self.selection()
+        if not s: return
         i=sel['item']
         e=i.element()
-        c=self.selection()
-        e.jumpToBlock(c, sel)
+        e.jumpToBlock(s, sel)
 
     def visualGoTo(self, kind, digit=1):
 
@@ -41,6 +31,10 @@ class Visual:
             e.updateBlock(kind, s)
             i.update()
 
+    @tag('w', modes=['visual[hint]|^own', 'visual[jump]|^own'])
+    def hintWord(self):
+        self.hint(kind='words')
+
     def visualGoToUp(self, digit=1):
         self.visualGoTo('up', digit=digit)
 
@@ -48,47 +42,15 @@ class Visual:
         self.visualGoTo('down', digit=digit)
 
     def visualGoToLeft(self, digit=1):
-
-        sel=self.getSelection()
-        if sel: raise
+        self.visualGoTo('right', digit=digit)
 
     def visualGoToRight(self, digit=1):
-
-        sel=self.getSelection()
-        if sel: raise
-
-    @tag('w', modes=['visual[hint]|^own'])
-    def hintWord(self):
-        self.hint(kind='words')
-
-    @tag('w', modes=['visual[hint]|^own'])
-    def hintWord(self):
-        self.hint(kind='words')
-
-    @tag('w', modes=['visual[jump]|^own']) 
-    def jumpWord(self):
-        self.hintWord()
+        self.visualGoTo('left', digit=digit)
 
     @tag('o', modes=['visual[select]|^own'])
-    def visualGoToStart(self): 
-        self.go(kind='start')
+    def visualGoToFirst(self): 
+        self.visualGoTo(kind='first')
 
     @tag('$', modes=['visual[select]|^own'])
     def visualGoToEnd(self):
         self.visualGoTo(kind='last')
-
-    @tag('w', modes=['visual[select]|^own']) 
-    def visualGoToWord(self, digit=1):
-        self.visualGoTo(kind='next', digit=digit)
-        
-    @tag('W', modes=['visual[select]|^own'])
-    def visualDegoToWord(self, digit=1):
-        self.visualGoTo(kind='cancelNext', digit=digit)
-
-    @tag('b', modes=['visual[select]|^own']) 
-    def visualBackToWord(self, digit=1):
-        self.visualGoTo(kind='prev', digit=digit)
-        
-    @tag('B', modes=['visual[select]|^own']) 
-    def deselectPrev(self, digit=1):
-        self.visualGoTo(kind='cancelPrev', digit=digit)
