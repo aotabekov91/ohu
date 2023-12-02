@@ -2,7 +2,7 @@ from gizmo.utils import tag
 
 class Visual:
 
-    hasBlocks=True
+    hasVisual=True
 
     def selectHint(
             self, sel, submode=None):
