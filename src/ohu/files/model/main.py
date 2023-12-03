@@ -4,6 +4,7 @@ from gizmo.vimo import model
 from . import mixin
 
 class FilesModel(
+        mixin.NoIcon,
         mixin.Locate,
         model.FileSystemModel
         ):
@@ -12,6 +13,12 @@ class FilesModel(
     kind='files'
     wantUniqView=True
     wantView=['FilesView']
+
+    def setListWidget(self, l):
+        self.m_listwidget=l
+
+    def listWidget(self):
+        return self.m_listwidget
 
     def resetConfigure(self, **kwargs):
 

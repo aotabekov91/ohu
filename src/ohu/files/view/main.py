@@ -1,32 +1,41 @@
-import os
 from gizmo.vimo import view
 from gizmo.utils import tag
 
-from .mixin import Locate
+from . import mixin
 
 class FilesView(
-        Locate,
-        view.mixin.TreeGo,
-        view.TreeView
+        # mixin.Hint,
+        mixin.Line,
+        mixin.Go,
+        mixin.Locate,
+        mixin.Visual,
+        view.ListView,
+        # view.mixin.ViewGo,
         ):
+
 
     prefix_keys={
         'command': 'f', 
         '|FilesView': '<c-.>'}
     position={'FilesView': 'dock_left'}
 
-    def setup(self):
+    @tag('t', modes=['command'])
+    def toggle(self):
+        super().toggle()
 
-        super().setup()
-        self.setArgOptions()
+    @tag('o', modes=['normal|FilesView'])
+    def open(self, **kwargs):
 
-    def setArgOptions(self):
-
-        plugs=self.app.moder.plugs
-        p=plugs.get('exec', None)
-        if p: 
-            p.setArgOptions(
-                'openFile', 'path', 'path')
+        m=self.m_model
+        idx=self.currentIndex()
+        path=m.filePath(idx)
+        if m.isDir(idx):
+            p=idx.parent()
+            self.setRootIndex(p)
+            self.setCurrentIndex(idx)
+        else:
+            self.app.handler.handleOpen(
+                    path, **kwargs)
 
     def count(self):
 
@@ -34,56 +43,18 @@ class FilesView(
         pidx=idx.parent()
         return self.m_model.rowCount(pidx)
 
-    @tag('t', modes=['command'])
-    def toggle(self):
-        super().toggle()
-
     def setPath(self, path=None):
 
         m=self.m_model
         idx=m.getPathIndex(path)
         self.setRootIndex(idx)
 
-    def setModel(self, model):
-
-        if model:
-            super().setModel(model)
-            for i in range(1, 4): 
-                self.hideColumn(i)
-
     def setSource(self, source):
 
         m=self.m_model
-        if m:
-            idx=m.getPathIndex(source)
-            pidx=idx.parent()
-            self.setRootIndex(pidx)
-            self.expand(idx)
-
-    @tag(modes=['exec'])
-    def openFile(
-            self, 
-            path, 
-            how=None, 
-            horizontal=False,
-            **kwargs
-            ):
-
-        self.open(
-                path, 
-                how=how,
-                horizontal=horizontal,
-                **kwargs
-                )
-
-    @tag('o', modes=['normal|FilesView'])
-    def open(self, path, **kwargs):
-
-        m=self.m_model
-        idx=m.index(path)
-        p=idx.parent()
-        self.setRootIndex(p)
-        self.setCurrentIndex(idx)
+        idx=m.getPathIndex(source)
+        self.setRootIndex(idx.parent())
+        self.expand(idx)
 
     def resetConfigure(
             self, 

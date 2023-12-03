@@ -14,29 +14,16 @@ class FileBrowser(Plug):
         self.app.handler.addModeller(
                 FilesModel)
         self.app.handler.handleInitiate('/')
+        self.setArgOptions()
 
-    # @tag('t', modes=['command']) 
-    # def activate(self):
-    #     m=self.app.moder
-    #     self.setView(self.m_view)
-    #     m.typeWanted.emit(self.m_view)
+    def setArgOptions(self):
 
-    # def setup(self):
-    #     super().setup()
-    #     self.m_model=self.getModel('/')
-    #     self.m_view=self.getView(
-    #             self.m_model)
-
-    # def open(self, source, **kwargs):
-    #     self.m_view.setSource(source)
-    #     self.activate()
+        plugs=self.app.moder.plugs
+        p=plugs.get('exec', None)
+        if p: 
+            p.setArgOptions(
+                'openFile', 'path', 'path')
 
     @tag(modes=['exec'])
-    def openLocalFile(
-            self, 
-            path, 
-            how=None, 
-            focus=True
-            ):
-        self.m_view.openFile(
-                path, how, focus)
+    def openFile(self, path):
+        self.app.handler.handleOpen(path)

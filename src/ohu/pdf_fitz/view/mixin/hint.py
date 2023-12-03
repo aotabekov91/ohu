@@ -1,35 +1,21 @@
 from PyQt5 import QtCore, QtGui
+from gizmo.vimo.view import mixin
 
-class Hint:
-
-    canHint=True
-    hintFinished=QtCore.pyqtSignal()
-    hintSelected=QtCore.pyqtSignal(object)
+class Hint(mixin.Hint):
 
     def setup(self):
 
-        self.m_hint_cache={}
-        self.m_hinting=False
         self.m_hinting_items=[]
-        self.clearHint()
         super().setup()
 
     def hint(self, alist=None, kind=None):
 
-        self.m_hinting=True
         vis=self.visibleItems()
         self.m_hinting_items=vis
-        if alist is None:
-            alist=self.getHintWordList()
-        if alist:
-            m, mm=self.generate(alist)
-            self.m_hint_map=m
-            self.m_hint_remap=mm
-            self.connectHint()
-            self.updateHintItems()
-        else:
-            self.hintFinished.emit()
-            self.cleanUpHinting()
+        if kind=='words':
+            alist = self.getHintWordsList()
+        super().hint(
+                alist=alist, kind=kind)
 
     def connectHint(self):
 
@@ -41,77 +27,18 @@ class Hint:
         for i in self.m_hinting_items:
             i.painted.disconnect(self.paintHints)
 
-    def updateHint(self, key=''):
-
-        match={}
-        for k, l in self.m_hint_remap.items():
-            if key==k[:len(key)]:
-                match[k]=l
-        if len(match)==0:
-            self.hintFinished.emit()
-            self.cleanUpHinting()
-            self.disconnectHint()
-        elif len(match)==1:
-            d=match[list(match.keys())[0]]
-            self.hintSelected.emit(d)
-            self.cleanUpHinting()
-            self.disconnectHint()
-        else:
-            hints={}
-            for k, d in match.items():
-                i=d['item']
-                if not i  in hints:
-                    hints[i]={}
-                hints[i][k]=d
-            self.m_hint_map=hints
-            self.m_hint_remap=match
-            self.updateHintItems()
-
     def updateHintItems(self):
 
         for i in self.m_hinting_items:
             i.update()
 
-    def cleanUpHinting(self):
-
-        self.m_hinting=False
-        self.clearHint()
-
     def clearHint(self):
 
-        self.m_hint_map={}
-        self.m_hint_remap={}
+        super().clearHint()
         self.updateHintItems()
         self.m_hinting_items=[]
 
-    def generate(self, alist):
-
-        alpha = 'abcdefghijklmnopqrstuvwxyz'
-
-        def remap(n, l):
-            c = []
-            for _ in range(l):
-                c.append(alpha[n % len(alpha)])
-                n = n // len(alpha)
-            return "".join(reversed(c))
-
-        hmap={}
-        hints={}
-        l=0
-        al=len(alpha)
-        ll=len(alist)
-        while al**l<ll: l+=1
-        l = max(l, 1)
-        for j, d in enumerate(alist):
-            item=d['item']
-            if not item in hints:
-                hints[item]={}
-            m=remap(j, l)
-            hmap[m]=d
-            hints[item][m]=d
-        return hints, hmap
-
-    def getHintWordList(self):
+    def getHintWordsList(self):
 
         alist=[]
         for i in self.m_hinting_items:
