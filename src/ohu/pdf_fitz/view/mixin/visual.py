@@ -4,45 +4,82 @@ class Visual:
 
     hasVisual=True
 
-    def event_functor(self, e, ear):
+    def visualFunctor(self, e):
+
         t=e.text()
-        sm=self.submode()
-        v=self.app.handler.view()
+        sm=self.app.moder.submode()
         if sm in ['hint', 'jump'] and t: 
-            self.key+=t
-            v.updateHint(self.key)
-            return True
+            self.m_hint_key+=t
+            self.updateHint(self.m_hint_key)
 
-    def selectHint(
-            self, sel, submode=None):
+    def startVisualMode(self, mode):
 
-        i=sel['item']
-        if submode=='jump': 
-            self.jump(sel)
-        elif submode=='hint':
-            self.select(i, sel)
+        if not self.selection():
+            self.hintWord()
 
-    def jump(self, sel):
+    def startHint(self, submode, kind):
+
+        self.m_hint_key=''
+        m=self.app.moder.mode()
+        m.eatEvent=True
+        m.setSubmode(submode)
+        self.hint(kind=kind)
+        m.eventFunctor.connect(
+                self.visualFunctor)
+        self.hintSelected.connect(
+                self.selectHint)
+        self.hintFinished.connect(
+                self.finishHint)
+
+    def finishHint(self):
+
+        m=self.app.moder.mode()
+        m.setSubmode('select')
+        m.eatEvent=False
+        self.app.earman.clearKeys()
+        m.eventFunctor.disconnect(
+                self.visualFunctor)
+        self.hintFinished.disconnect(
+                self.finishHint)
+        self.hintSelected.disconnect(
+                self.selectHint)
+
+    def selectHint(self, sel):
+
+        item=sel['item']
+        self.app.earman.clearKeys()
+        sm=self.app.moder.submode()
+        if sm=='jump': 
+            self.jump(item, sel)
+        elif sm=='hint':
+            self.select(item, sel)
+        self.finishHint()
+
+    def jump(self, item, sel):
 
         s=self.selection()
-        if not s: return
-        i=sel['item']
-        e=i.element()
+        e=item.element()
         e.jumpToBlock(s, sel)
 
     def visualGoTo(self, kind, digit=1):
 
         for i in range(digit):
             s=self.selection()
-            if not s: return
-            i=s['item']
-            e=i.element()
-            e.updateBlock(kind, s)
-            i.update()
+            if s:
+                i=s['item']
+                e=i.element()
+                e.updateBlock(kind, s)
+                i.update()
 
-    @tag('w', modes=['visual[hint]|^own', 'visual[jump]|^own'])
+    @tag('w', modes=['visual|^own'])
     def hintWord(self):
-        self.hint(kind='words')
+        self.startHint('hint', 'words')
+
+    @tag('e', modes=['visual|^own'])
+    def jumpWord(self):
+
+        if self.selection():
+            self.startHint('jump', 'words')
 
     def visualGoToUp(self, digit=1):
         self.visualGoTo('up', digit=digit)
@@ -56,10 +93,10 @@ class Visual:
     def visualGoToRight(self, digit=1):
         self.visualGoTo('left', digit=digit)
 
-    @tag('o', modes=['visual[select]|^own'])
+    @tag('o', modes=['visual|^own'])
     def visualGoToFirst(self): 
         self.visualGoTo(kind='first')
 
-    @tag('$', modes=['visual[select]|^own'])
+    @tag('$', modes=['visual|^own'])
     def visualGoToEnd(self):
         self.visualGoTo(kind='last')

@@ -198,10 +198,11 @@ class Block:
         cb=csel['box']
         jb=jsel['box']
         ctl=cb[0].topLeft()
-        cbr=cb[-1].bottomRight()
         jtl=jb[0].topLeft()
+        cbr=cb[-1].bottomRight()
         jbr=jb[-1].bottomRight()
 
+        raise
         if abs(ctl.y()-jbr.y())<0.1:
             if jtl.x()<ctl.x():
                 cb[0].setTopLeft(jtl)
@@ -213,25 +214,3 @@ class Block:
             self.updateBlock('last', jsel)
             b, s, e = self.getData(jsel)
             cb.insert(0, jb[0])
-            raise
-
-
-        # s=self.view.selection()
-        # item=s[-1]['item']
-        # elem=item.element()
-        # # b=self.s[0]['box']
-        # # start, end, rect = b[0], b[-1], 
-        # start=self.s[0]['box'][0]
-        # end=self.s[0]['box'][-1]
-        # rect=s[0]['box'][0]
-        # if rect.y()>end.y():
-        #     # item.select([page.getRows(start, rect)])
-        #     selected=[elem.getRows(start, rect)]
-        # elif rect.y()<start.y():
-        #     # item.select([page.getRows(rect, end)])
-        #     selected=[elem.getRows(rect, end)]
-        # else:
-        #     # item.select([page.getRows(start, rect)])
-        #     selected=[elem.getRows(start, rect)]
-        # item.select(selected)
-        # self.hintSelected.disconnect(self.jump)
