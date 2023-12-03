@@ -1,3 +1,4 @@
+import os
 from plug.qt import Plug
 from gizmo.utils import tag
 
@@ -13,7 +14,8 @@ class FileBrowser(Plug):
                 FilesView)
         self.app.handler.addModeller(
                 FilesModel)
-        self.app.handler.handleInitiate('/')
+        path=os.path.abspath('.')
+        self.app.handler.handleInitiate(path)
         self.setArgOptions()
 
     def setArgOptions(self):

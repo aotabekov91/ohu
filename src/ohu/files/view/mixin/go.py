@@ -7,6 +7,15 @@ class Go(mixin.ViewGo):
         super().go(*args, **kwargs)
         self.update()
 
+    def goTo(self, digit=None, **kwargs):
+
+        if type(digit)==int:
+            pidx=self.currentIndex().parent()
+            idx=self.m_model.index(digit-1, 0, pidx)
+            self.setCurrentIndex(idx)
+        else:
+            super().goTo(digit=digit, **kwargs)
+
     def goToLast(self):
 
         pidx=self.currentIndex().parent()

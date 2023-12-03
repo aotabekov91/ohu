@@ -6,57 +6,38 @@ class Visual:
 
     hasVisual=True
 
-    @tag('w', modes=['visual[hint]|^own', 'visual[jump]|^own'])
-    def hintWord(self):
-        self.hint(kind='words')
+    def setup(self):
 
-    def startHint(self, submode):
-        self.hint()
+        super().setup()
+        self.m_visual_direction=None
+        self.app.moder.modeChanged.connect(
+                self.setVisualMode)
 
-    def setMode(self):
+    def setVisualMode(self, mode):
 
-        sm=self.app.moder.submode()
-        if sm=='select':
+        if mode.name=='visual':
+            self.m_visual_direction=None
             self.setSelectionMode(V.MultiSelection)
         else:
             self.setSelectionMode(V.SingleSelection)
 
-    def selectHint(
-            self, sel, submode=None):
-
-        i=sel['item']
-        if submode=='jump': 
-            self.jump(sel)
-        elif submode=='hint':
-            self.select(i, sel)
-
-    def jump(self, sel):
-
-        s=self.selection()
-        if not s: return
-        i=sel['item']
-        e=i.element()
-        e.jumpToBlock(s, sel)
-
     def visualGoTo(self, kind, digit=1):
 
-        self.setMode()
         for i in range(digit):
+            i=self.currentIndex()
             m=self.selectionModel()
-            idx=self.currentIndex()
-            selected=m.isSelected(idx)
-            self.go(kind=kind, digit=digit)
-            if selected: 
-                m.select(idx, QItemSelectionModel.Select)
+            c1=self.m_visual_direction
+            c2=kind!=self.m_visual_direction
+            if c1 and c2: 
+                mode=QItemSelectionModel.Toggle
+                self.m_visual_direction=kind
+                m.select(i, mode)
+                return
+            self.go(kind=kind)
+        self.m_visual_direction=kind
 
     def visualGoToUp(self, digit=1):
         self.visualGoTo('up', digit)
 
     def visualGoToDown(self, digit=1):
         self.visualGoTo('down', digit)
-
-    def visualGoToLeft(self, digit=1):
-        self.visualGoTo('right', digit=digit)
-
-    def visualGoToRight(self, digit=1):
-        self.visualGoTo('left', digit=digit)

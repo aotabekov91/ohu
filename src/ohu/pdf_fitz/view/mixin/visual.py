@@ -4,6 +4,15 @@ class Visual:
 
     hasVisual=True
 
+    def event_functor(self, e, ear):
+        t=e.text()
+        sm=self.submode()
+        v=self.app.handler.view()
+        if sm in ['hint', 'jump'] and t: 
+            self.key+=t
+            v.updateHint(self.key)
+            return True
+
     def selectHint(
             self, sel, submode=None):
 

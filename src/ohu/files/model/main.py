@@ -14,12 +14,6 @@ class FilesModel(
     wantUniqView=True
     wantView=['FilesView']
 
-    def setListWidget(self, l):
-        self.m_listwidget=l
-
-    def listWidget(self):
-        return self.m_listwidget
-
     def resetConfigure(self, **kwargs):
 
         s=kwargs.get('source', None)
