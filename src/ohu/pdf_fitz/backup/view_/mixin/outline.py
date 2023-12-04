@@ -36,7 +36,7 @@ class Outline:
                 QtCore.Qt.ItemIsSelectable
                 )
         if o.dest.kind != fitz.LINK_NONE:
-            # page = o.dest.ld.gotor.page + 1
+            # page = o.dest.ld.goTor.page + 1
             page = o.dest.page + 1
             i.setData(page)#, QtCore.Qt.UserRole + 1)
             pi = i.clone()
@@ -60,8 +60,8 @@ class Outline:
         if vitem:
             m=self.m_outline
             idx=vitem.element().index()
-            goto=0
+            goTo=0
             for r in range(m.rowCount()):
                 if idx<m.item(r).data():
-                    return m.index(goto, 0)
-                goto=r
+                    return m.index(goTo, 0)
+                goTo=r

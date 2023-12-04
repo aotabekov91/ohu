@@ -12,7 +12,7 @@ class Locate(mixin.Locate):
             i, x, y = l
         elif l and len(l)==2: 
             x, y = l
-        self.goto(i, x, y)
+        self.goTo(i, x, y)
         return i, x, y
 
     def getPositionLocator(self, data=None):

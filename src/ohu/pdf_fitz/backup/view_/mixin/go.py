@@ -5,11 +5,11 @@ class Go(mixin.Go):
     def go(self, kind, *args, **kwargs):
 
         if kind=='first':
-            self.goto(1)
+            self.goTo(1)
         elif kind=='last':
-            self.goto(self.count())
+            self.goTo(self.count())
         elif type(kind)==int:
-            self.goto(kind)
+            self.goTo(kind)
         elif kind=='next':
             self.nextItem(*args, **kwargs)
         elif kind=='prev':

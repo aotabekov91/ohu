@@ -75,7 +75,7 @@ class PdfView(View):
                 )
         self.scene().setSceneRect(l, 0.0, r-l, h)
 
-    def goto(
+    def goTo(
             self, 
             digit=None, 
             x=0., 

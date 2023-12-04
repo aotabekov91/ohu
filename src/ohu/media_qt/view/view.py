@@ -42,7 +42,7 @@ class MediaQtView(
                 self.output, 
                 QtCore.Qt.KeepAspectRatio)
 
-    def goto(
+    def goTo(
             self, 
             digit=None, 
             x=0, 

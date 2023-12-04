@@ -93,10 +93,10 @@ class Visual:
     def visualGoToRight(self, digit=1):
         self.visualGoTo('left', digit=digit)
 
-    @tag('o', modes=['visual|^own'])
+    @tag('o', modes=['visual[select]|^own'])
     def visualGoToFirst(self): 
         self.visualGoTo(kind='first')
 
-    @tag('$', modes=['visual|^own'])
+    @tag('$', modes=['visual[select]|^own'])
     def visualGoToEnd(self):
         self.visualGoTo(kind='last')

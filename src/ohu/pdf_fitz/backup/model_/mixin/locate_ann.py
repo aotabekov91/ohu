@@ -37,7 +37,7 @@ class AnnotateLocate:
         b=data.get('box', None)
         if all([v, i, b]):
             tl=b[0].topLeft()
-            v.goto(i.index(), tl.x(), tl.y())
+            v.goTo(i.index(), tl.x(), tl.y())
 
     def getAnnBox(self, data):
 

@@ -11,4 +11,4 @@ class AnnotateLocate(mixin.Locate):
         v=self.app.handler.type()
         if all([v, p, b]):
             tl=b[0].topLeft()
-            v.goto(p, tl.x(), tl.y())
+            v.goTo(p, tl.x(), tl.y())

@@ -37,7 +37,7 @@ class Outline:
                 QtCore.Qt.ItemIsSelectable
                 )
         if o.dest.kind != fitz.LINK_NONE:
-            # page = o.dest.ld.gotor.page + 1
+            # page = o.dest.ld.goTor.page + 1
             page = o.dest.page + 1
             i.setData(page)#, QtCore.Qt.UserRole + 1)
             pi = i.clone()

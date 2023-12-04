@@ -38,7 +38,7 @@ class AnnotateLocate:
         v=data.get('view', None)
         if all([v, i, b]):
             tl=b[0].topLeft()
-            v.goto(p, tl.x(), tl.y())
+            v.goTo(p, tl.x(), tl.y())
 
     def getAnnBox(self, data={}):
 
