@@ -37,6 +37,9 @@ class Go(mixin.ViewGo):
                 c=self.m_model.index(0, 0, idx)
                 self.setCurrentIndex(c)
                 self.setRootIndex(idx)
+                path=self.m_model.filePath(idx)
+                self.m_model.setId(path)
+                self.modelChanged.emit(self.m_model)
 
     def goToLeft(self, digit=1):
 
@@ -46,6 +49,9 @@ class Go(mixin.ViewGo):
             if p: 
                 self.setRootIndex(p)
                 self.setCurrentIndex(r)
+                path=self.m_model.filePath(p)
+                self.m_model.setId(path)
+                self.modelChanged.emit(self.m_model)
 
     def setRootIndex(self, idx):
 
