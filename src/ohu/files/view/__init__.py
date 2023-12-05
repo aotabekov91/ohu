@@ -1,1 +1,1 @@
-from .main import FilesView
+from .main import FTab

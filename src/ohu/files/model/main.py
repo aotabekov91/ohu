@@ -3,7 +3,7 @@ from gizmo.vimo import model
 
 from . import mixin
 
-class FilesModel(
+class FModel(
         mixin.NoIcon,
         mixin.Locate,
         model.FileSystemModel
@@ -12,7 +12,7 @@ class FilesModel(
     isType=True
     kind='files'
     wantUniqView=True
-    wantView=['FilesView']
+    wantView=['FTab']
 
     def resetConfigure(self, **kwargs):
 

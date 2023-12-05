@@ -1,14 +1,18 @@
+from gizmo.utils import tag
 from gizmo.vimo import view
 
 from . import mixin
 
-class View(
+class FilesView(
         mixin.Go,
+        mixin.Copy,
         mixin.Line,
         mixin.Locate,
         mixin.Visual,
         view.ListView,
         ):
+
+    prefix_keys={'|FilesView': '<c-.>'}
 
     def open(self, **kwargs):
 
