@@ -1,5 +1,5 @@
-from PyQt5 import QtWidgets
 from gizmo.vimo import view
+from PyQt5 import QtWidgets, QtCore
 
 from . import mixin
 from ..item import FitzItem

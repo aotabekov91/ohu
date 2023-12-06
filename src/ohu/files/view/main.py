@@ -9,6 +9,11 @@ class FTab(view.Tabber):
     prefix_keys={'command': 'f'}
     position={'FTab': 'dock_left'}
 
+    def tabClose(self, tab=None):
+
+        if self.count()>1:
+            super().tabClose(tab)
+
     def tabAddNew(self, copy=False):
 
         ptab=self.current_tab
