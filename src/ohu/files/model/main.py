@@ -21,6 +21,8 @@ class FModel(
         
     @classmethod
     def isCompatible(cls, s, **kwargs):
+
+        if type(s)!=str: return False
         return s and os.path.isdir(s)
 
     @classmethod

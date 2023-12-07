@@ -18,10 +18,12 @@ class FitzView(
         view.mixin.Select,
         view.mixin.SceneGo,
         view.mixin.PoolItems, 
+        view.mixin.DFullscreen,
         view.mixin.ItemsHighlight,
         view.View,
         QtWidgets.QGraphicsView,
         ):
 
+    canFollow=True
     item_class=FitzItem
     position={'FitzView': 'display'}

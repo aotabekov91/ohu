@@ -5,33 +5,14 @@ from .view import FilesView
 
 class FTab(view.Tabber):
 
+    canFollow=True
     tab_class=FilesView
     prefix_keys={'command': 'f'}
     position={'FTab': 'dock_left'}
 
-    def tabClose(self, tab=None):
-
-        if self.count()>1:
-            super().tabClose(tab)
-
     def tabAddNew(self, copy=False):
+        super().tabAddNew(copy=True)
 
-        ptab=self.current_tab
-        if ptab:
-            ntab=ptab.copy()
-        else:
-            ntab=self.tabGet()
-        self.tabAdd(ntab)
-        self.tabSet(ntab)
-        self.setFocus()
-        return ntab
-    
     @tag('t', modes=['command'])
     def toggle(self):
         super().toggle()
-
-    def setModel(self, model):
-
-        if not self.current_tab:
-            self.tabAddNew()
-        self.current_tab.setModel(model)

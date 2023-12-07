@@ -10,7 +10,7 @@ class Copy:
                 index=self.m_id, 
                 config=self.m_config)
         c.setModel(self.m_model)
-        self.app.handler.connectView(c)
+        # self.app.handler.connectView(c)
         idx=self.currentIndex()
         path=self.m_model.filePath(idx)
         idx=self.m_model.getPathIndex(path)

@@ -9,6 +9,7 @@ class FilesView(
         mixin.Line,
         mixin.Locate,
         mixin.Visual,
+        view.mixin.TFullscreen,
         view.ListView,
         ):
 
