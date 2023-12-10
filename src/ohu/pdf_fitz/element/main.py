@@ -1,22 +1,23 @@
 import fitz
 from PyQt5 import QtCore, QtGui
-from gizmo.vimo.element import Element
+from gizmo.vimo import element
 
-from .mixin import Search, Block, Links, Annotate
+from . import mixin
 
 class FitzElement(
-        Search,
-        Block,
-        Links,
-        Element, 
-        Annotate,
-        QtCore.QObject):
+        mixin.Search,
+        mixin.Block,
+        mixin.Links,
+        mixin.Annotate,
+        element.mixin.Cache,
+        element.Element, 
+        QtCore.QObject
+        ):
 
     def setup(self):
 
         super().setup()
         self.setSize()
-        self.matrix=fitz.Matrix(1, 1)
         self.fmt = QtGui.QImage.Format_RGB888
 
     def setSize(self):
@@ -36,15 +37,18 @@ class FitzElement(
             rect=None
             ):
 
-        m=self.matrix
+        x, y = 1, 1
         if rect:
             rs=rect.size()
             os=self.size()
             x=rs.width()/os.width()
             y=rs.height()/os.height()
-            m=fitz.Matrix(x, y)
+            x=round(x, 5)
+            y=round(y, 5)
         p=self.m_data.get_pixmap(
-                matrix=m, alpha=False)
+                alpha=False,
+                matrix=fitz.Matrix(x, y),
+                )
         return QtGui.QImage(
             p.samples,
             p.width,

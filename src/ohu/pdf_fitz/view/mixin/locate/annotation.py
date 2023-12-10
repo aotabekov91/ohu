@@ -1,6 +1,6 @@
 from gizmo.vimo.view import mixin
 
-class AnnotateLocate(mixin.Locate):
+class ALocate(mixin.Locate):
 
     canAnnotate=True
 

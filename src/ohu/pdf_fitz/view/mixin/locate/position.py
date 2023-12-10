@@ -1,6 +1,6 @@
 from gizmo.vimo.view import mixin
 
-class Locate(mixin.Locate):
+class PLocate(mixin.Locate):
 
     def openPositionLocator(self, data={}, **kwargs):
 

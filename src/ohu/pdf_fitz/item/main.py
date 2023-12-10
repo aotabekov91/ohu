@@ -1,16 +1,15 @@
 from PyQt5 import QtWidgets
-from gizmo.vimo.item import RenderItem
-from gizmo.vimo.item.mixin import Zoom, Highlight, Select, Annotate
+from gizmo.vimo import item
 
-from .mixin import Links
+from . import mixin
 
 class FitzItem(
-        Zoom, 
-        Links,
-        Select,
-        Annotate,
-        Highlight, 
-        RenderItem, 
+        mixin.Links,
+        item.mixin.Zoom, 
+        item.mixin.Select,
+        item.mixin.Annotate,
+        item.mixin.Highlight, 
+        mixin.RenderItem, 
         QtWidgets.QGraphicsObject,
         ):
     pass
